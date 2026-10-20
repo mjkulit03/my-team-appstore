@@ -1008,13 +1008,19 @@
     loginSubmit.disabled = true;
     setStatus(loginStatus, 'Checking token…', '');
     token = candidate;
-    api('', {}).then(function (repo) {
-      var perms = repo.permissions || {};
-      if (!perms.push && !perms.admin) {
-        throw new Error('That token can read this repository but not write to it. Set Contents: Read and write.');
-      }
-      return api('/contents/' + CONTENT_PATH + '?ref=' + BRANCH);
-    }).then(function (file) {
+    // A write probe, because the repo's `permissions` field describes the signed-in
+    // user rather than what the token itself may do. Creating an unreferenced blob
+    // needs Contents: write and leaves no commit behind.
+    api('/git/blobs', { method: 'POST', body: JSON.stringify({ content: 'store editor access check', encoding: 'utf-8' }) })
+      .catch(function (error) {
+        if (error.status === 401 || error.status === 403 || error.status === 404) {
+          throw new Error('That token cannot write to this repository. Give it Contents: Read and write.');
+        }
+        throw error;
+      })
+      .then(function () {
+        return api('/contents/' + CONTENT_PATH + '?ref=' + BRANCH);
+      }).then(function (file) {
       sha = file && file.sha ? file.sha : null;
       sessionStorage.setItem(TOKEN_KEY, candidate);
       login.close();
