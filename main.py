@@ -21,7 +21,7 @@ from fastapi.responses import FileResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
 from agents import run_accounting_agent, run_marketing_agent, run_sales_agent
-from api import control, pages, storefront
+from api import control, pages, storeadmin, storefront
 from auth import add_session_middleware
 from schemas import AccountingRequest, MarketingRequest, SalesRequest
 import users
@@ -163,6 +163,7 @@ add_session_middleware(app)
 app.include_router(storefront.router)
 app.include_router(control.router)
 app.include_router(control.users_router)
+app.include_router(storeadmin.router)
 app.include_router(pages.router)
 
 

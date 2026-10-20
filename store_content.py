@@ -61,6 +61,19 @@ PAGE_COPY_DEFAULTS: dict[str, str] = {
 PRICE_KEYS = ("price_month", "price_setup")
 LABEL_KEYS = ("name", "tagline", "category")
 
+#: Human labels for the copy fields, in the order the editor shows them.
+COPY_LABELS: dict[str, str] = {
+    "hero_headline": "Hero headline",
+    "hero_eyebrow": "Hero eyebrow",
+    "hero_lede": "Hero paragraph",
+    "catalog_heading": "Catalog heading",
+    "catalog_description": "Catalog description",
+    "bundle_heading": "Bundle heading",
+    "bundle_body": "Bundle paragraph",
+    "brand_tagline": "Logo tagline",
+    "footer_line": "Footer line",
+}
+
 
 class ContentError(ValueError):
     """Raised when a content document cannot be parsed at all."""
@@ -164,6 +177,73 @@ def normalize(data: Any) -> dict[str, Any]:
     if isinstance(updated, str) and len(updated) <= 40:
         document["updated_at"] = updated.strip()
     return document
+
+
+def validate(data: Any) -> list[str]:
+    """Explain what is wrong with a document, so an editor can refuse it.
+
+    ``normalize`` silently drops bad values (right for a hand-edited file that
+    must not break the build). An interactive editor is different: it should say
+    what is wrong instead of appearing to save a value that then disappears.
+    Returns an empty list when the document is usable.
+    """
+    if not isinstance(data, dict):
+        return ["The content document must be a JSON object."]
+
+    problems: list[str] = []
+    known_slugs = {p["slug"] for p in catalog.list_products()}
+
+    prices = data.get("prices")
+    if prices is not None and not isinstance(prices, dict):
+        problems.append("`prices` must be an object keyed by product slug.")
+    elif isinstance(prices, dict):
+        for slug, fields in prices.items():
+            if slug not in known_slugs:
+                problems.append(f"Unknown product {slug!r} in `prices`.")
+                continue
+            if not isinstance(fields, dict):
+                problems.append(f"Prices for {slug!r} must be an object.")
+                continue
+            for key in PRICE_KEYS:
+                if key not in fields:
+                    continue
+                if _clean_price(fields[key]) is None:
+                    label = "monthly price" if key == "price_month" else "setup fee"
+                    problems.append(
+                        f"{slug}: the {label} must be a whole peso amount between 0 and {MAX_PRICE:,}."
+                    )
+
+    labels = data.get("labels")
+    if labels is not None and not isinstance(labels, dict):
+        problems.append("`labels` must be an object keyed by product slug.")
+    elif isinstance(labels, dict):
+        for slug, fields in labels.items():
+            if slug not in known_slugs:
+                problems.append(f"Unknown product {slug!r} in `labels`.")
+                continue
+            if not isinstance(fields, dict):
+                problems.append(f"Labels for {slug!r} must be an object.")
+                continue
+            for key in LABEL_KEYS:
+                if key not in fields:
+                    continue
+                if _clean_text(fields[key], MAX_TEXT[key]) is None:
+                    problems.append(
+                        f"{slug}: the {key} must be text of 1-{MAX_TEXT[key]} characters."
+                    )
+
+    copy = data.get("copy")
+    if copy is not None and not isinstance(copy, dict):
+        problems.append("`copy` must be an object of page-copy fields.")
+    elif isinstance(copy, dict):
+        for key, value in copy.items():
+            if key not in PAGE_COPY_DEFAULTS:
+                problems.append(f"Unknown page-copy field {key!r}.")
+                continue
+            if _clean_text(value, MAX_COPY) is None:
+                problems.append(f"{COPY_LABELS.get(key, key)} must be text of 1-{MAX_COPY} characters.")
+
+    return problems
 
 
 def load(path: Path | None = None) -> dict[str, Any]:

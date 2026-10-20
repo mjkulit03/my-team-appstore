@@ -228,10 +228,17 @@
       <a href="#faq">FAQ</a>
     </nav>
     <div class="header-actions">
+      {% if admin_url %}
+      <a class="btn btn-small admin-btn" id="admin-link" href="{{ admin_url }}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><rect x="4" y="10.5" width="16" height="10" rx="2"></rect><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"></path></svg>
+        <span>Admin</span>
+      </a>
+      {% else %}
       <button class="btn btn-small admin-btn" id="admin-open" type="button">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><rect x="4" y="10.5" width="16" height="10" rx="2"></rect><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"></path></svg>
         <span id="admin-open-label">Admin</span>
       </button>
+      {% endif %}
       <a class="btn btn-small" href="{{ github_url }}" target="_blank" rel="noopener">GitHub ↗</a>
     </div>
   </div>
@@ -397,6 +404,7 @@
   </div>
 </footer>
 
+{% if not admin_url %}
 <!-- ------------------------------------------------------------ admin UI -->
 <dialog id="admin-login" aria-labelledby="admin-login-title">
   <div class="panel">
@@ -457,6 +465,7 @@
 <script type="application/json" id="store-content">{{ content_json|safe }}</script>
 <script type="application/json" id="store-products">{{ products_json|safe }}</script>
 <script type="application/json" id="store-copy-defaults">{{ copy_defaults|tojson }}</script>
+{% endif %}
 
 <script>
 (function () {
@@ -515,7 +524,10 @@
   var baseContent = readJSON('store-content') || {};
   var products = readJSON('store-products') || [];
 
+  // On a hosted deployment the Admin button is a plain link to the app's
+  // username/password sign-in, so there is no token editor to wire up here.
   var openBtn = document.getElementById('admin-open');
+  if (!openBtn) { return; }
   var openLabel = document.getElementById('admin-open-label');
   var login = document.getElementById('admin-login');
   var loginForm = document.getElementById('admin-login-form');

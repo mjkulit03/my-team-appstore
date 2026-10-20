@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% block title %}Store editor — My Team{% endblock %}
+
+{% block content %}
+<style>
+  .editor-page { padding: 30px 0 64px; }
+  .editor-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 18px; flex-wrap: wrap; margin-bottom: 6px; }
+  .editor-head h1 { margin: 0 0 4px; font-size: 27px; letter-spacing: -.02em; }
+  .editor-card { padding: 20px 22px; margin-top: 18px; }
+  .editor-card h2 { margin: 0 0 4px; font-size: 17px; letter-spacing: -.01em; }
+  .editor-card > p.hint { margin: 0 0 14px; font-size: 12.5px; color: var(--muted, #64748b); }
+  .editor-rows { margin-top: 10px; }
+  .editor-row { display: grid; grid-template-columns: 34px 1.15fr 1.7fr .85fr 108px 108px; gap: 8px; align-items: center; padding: 7px 0; border-bottom: 1px solid var(--border); }
+  .editor-row:last-child { border-bottom: 0; }
+  .editor-row .glyph { font-size: 17px; text-align: center; }
+  .editor-row-head { font-size: 11px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: #64748b; border-bottom: 1px solid var(--border); }
+  .editor-row input { width: 100%; padding: 8px 10px; font-size: 13px; border: 1px solid var(--border); border-radius: 8px; background: #fff; font-family: inherit; color: inherit; }
+  .editor-row input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(79,70,229,.12); }
+  .editor-row input[readonly] { background: #f8fafc; color: #64748b; }
+  .editor-row input.money { text-align: right; font-variant-numeric: tabular-nums; }
+  .editor-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+  .editor-actions .muted { margin-left: auto; }
+  @media (max-width: 900px) {
+    .editor-row { grid-template-columns: 28px 1fr; }
+    .editor-row-head { display: none; }
+    .editor-row .glyph { grid-row: span 5; align-self: start; padding-top: 8px; }
+  }
+</style>
+
+<div class="wrap editor-page">
+  <p class="small"><a href="/control/overview">← Control panel</a></p>
+
+  <div class="editor-head">
+    <div>
+      <h1>Store editor</h1>
+      <p class="muted" style="margin:0">
+        Signed in as <strong>{{ me.username }}</strong> ({{ me.role }}). These prices and labels are what
+        visitors see on the store page.
+      </p>
+    </div>
+    <p class="small muted" style="margin:0">
+      {% if publishing %}Mirror: <code>{{ mirror_repo }}</code>{% else %}Local store only{% endif %}
+    </p>
+  </div>
+
+  {% if notice %}<div class="flash flash-ok"><p>{{ notice }}</p></div>{% endif %}
+  {% if error %}<div class="flash flash-error"><p>{{ error }}</p></div>{% endif %}
+  {% if not can_edit %}
+    <div class="flash flash-warn">
+      <p>You can review the store here, but changing prices needs an administrator or operator account.</p>
+    </div>
+  {% endif %}
+
+  <form class="form" method="post" action="/control/store">
+    <section class="card editor-card">
+      <h2>Page copy</h2>
+      <p class="hint">
+        <code>{count}</code> is replaced with the number of systems ({{ products|length }}).
+        Leave a field as it is to keep the default wording.
+      </p>
+      {% for key, label in copy_fields %}
+        {% if key in ("hero_lede", "catalog_description", "bundle_body") %}
+          <label>{{ label }}
+            <textarea name="copy.{{ key }}" rows="3" maxlength="{{ max_copy }}"
+                      {% if not can_edit %}readonly{% endif %}>{{ copy[key] }}</textarea>
+          </label>
+        {% else %}
+          <label>{{ label }}
+            <input type="text" name="copy.{{ key }}" value="{{ copy[key] }}" maxlength="{{ max_copy }}"
+                   {% if not can_edit %}readonly{% endif %}>
+          </label>
+        {% endif %}
+      {% endfor %}
+    </section>
+
+    <section class="card editor-card">
+      <h2>Prices &amp; labels</h2>
+      <p class="hint">
+        Whole pesos, 0 to {{ "{:,}".format(max_price) }}. A blank field falls back to the catalog value.
+      </p>
+      <div class="editor-rows">
+        <div class="editor-row editor-row-head" aria-hidden="true">
+          <span></span><span>Name</span><span>Tagline</span><span>Category</span>
+          <span style="text-align:right">₱ / month</span><span style="text-align:right">₱ setup</span>
+        </div>
+        {% for product in products %}
+        <div class="editor-row">
+          <span class="glyph" aria-hidden="true">{{ product.icon }}</span>
+          <input type="text" name="product.{{ product.slug }}.name" value="{{ product.name }}"
+                 aria-label="{{ product.name }} name" maxlength="{{ max_text.name }}"
+                 {% if not can_edit %}readonly{% endif %}>
+          <input type="text" name="product.{{ product.slug }}.tagline" value="{{ product.tagline }}"
+                 aria-label="{{ product.name }} tagline" maxlength="{{ max_text.tagline }}"
+                 {% if not can_edit %}readonly{% endif %}>
+          <input type="text" name="product.{{ product.slug }}.category" value="{{ product.category }}"
+                 aria-label="{{ product.name }} category" maxlength="{{ max_text.category }}"
+                 {% if not can_edit %}readonly{% endif %}>
+          <input class="money" type="text" inputmode="numeric" name="product.{{ product.slug }}.price_month"
+                 value="{{ product.price_month }}" aria-label="{{ product.name }} monthly price"
+                 {% if not can_edit %}readonly{% endif %}>
+          <input class="money" type="text" inputmode="numeric" name="product.{{ product.slug }}.price_setup"
+                 value="{{ product.price_setup }}" aria-label="{{ product.name }} setup fee"
+                 {% if not can_edit %}readonly{% endif %}>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+
+    <div class="editor-actions">
+      <button class="btn btn-primary" type="submit" {% if not can_edit %}disabled{% endif %}>Save &amp; publish</button>
+      <a class="btn btn-ghost" href="/control/store">Discard changes</a>
+      <a class="btn btn-ghost" href="/app-store" target="_blank" rel="noopener">Open the store ↗</a>
+      <span class="small muted">Saving rebuilds <code>docs/index.html</code> immediately.</span>
+    </div>
+  </form>
+</div>
+{% endblock %}

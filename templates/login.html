@@ -16,6 +16,7 @@
       {% else %}
         {% if error %}<div class="flash flash-error"><p>{{ error }}</p></div>{% endif %}
         <form method="post" action="/control/login" class="form">
+          {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
           <label>Username<input type="text" name="username" required autofocus autocomplete="username"></label>
           <label>Password<input type="password" name="password" required autocomplete="current-password"></label>
           <button class="btn btn-primary btn-block" type="submit">Sign in</button>

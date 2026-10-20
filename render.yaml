@@ -1,0 +1,42 @@
+# Render blueprint for hosting the platform, which is what makes the store's
+# Admin button a normal username/password sign-in instead of a GitHub token.
+#
+#   Render -> New -> Blueprint -> pick this repository.
+#
+# Then fill in the two secrets marked `sync: false` in the dashboard.
+services:
+  - type: web
+    name: my-team-app
+    runtime: python
+    plan: free
+    region: singapore
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.6"
+
+      # Signs the control-panel session cookie; Render generates it once.
+      - key: SESSION_SECRET
+        generateValue: true
+
+      # Password for the first `admin` account. Set it in the dashboard.
+      - key: CONTROL_PANEL_PASSWORD
+        sync: false
+
+      # Demo accounts share one password — never on a public instance.
+      - key: SEED_DEMO_USERS
+        value: "false"
+
+      # The store's Admin button links to the app's password-based editor.
+      - key: STORE_ADMIN_URL
+        value: /control/store
+
+      # Push each save to the Pages repository, so edits survive an ephemeral
+      # disk and the public mirror stays current. Token needs Contents: Read
+      # and write on this repository.
+      - key: STORE_REPO
+        value: mjkulit03/my-team-appstore
+      - key: STORE_GITHUB_TOKEN
+        sync: false

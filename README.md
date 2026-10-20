@@ -124,6 +124,72 @@ Editing is a normal commit: the Pages workflow rebuilds the store about a minute
 after saving, the repo history is the audit trail, and a bad edit can be reverted
 with `git revert`. Sign out clears the token from the tab.
 
+### Admin editor with a username and password (hosted)
+
+GitHub Pages is static, so the token dialog above is the only way to edit the
+store *without a server*: a password checked in JavaScript could be bypassed with
+the browser console, and there would still be nowhere to store the edit.
+
+Host the FastAPI app and that changes. `api/storeadmin.py` adds
+`/control/store`, an editor behind the same accounts as the rest of the control
+panel — so signing in is `admin` plus `CONTROL_PANEL_PASSWORD`, nothing else.
+
+| Where | What happens |
+| --- | --- |
+| `GET /control/login?next=/control/store` | Username + password form; returns to the editor after signing in. |
+| `GET /control/store` | Page copy, and every product's name, tagline, category, monthly price and setup fee. |
+| `POST /control/store` | Validates, writes `docs/store-content.json`, rebuilds `docs/index.html`. Bad prices are refused with the reason; nothing is written. |
+| `GET /app-store` | The rebuilt store, served by the same app. |
+
+Roles: `admin` and `operator` may change prices; `analyst` can look but the form
+is read-only.
+
+**Keeping the GitHub Pages mirror in sync.** Set `STORE_GITHUB_TOKEN` (a token
+with *Contents: Read and write* on this repository) and `STORE_REPO`, and every
+save is also committed to `docs/store-content.json`. The Pages workflow then
+rebuilds the public site, so the token stays on the server and never reaches a
+browser. A rejected push is reported in the editor but never loses the local save.
+
+```bash
+STORE_REPO=mjkulit03/my-team-appstore
+STORE_GITHUB_TOKEN=github_pat_…     # Contents: Read and write on that repo
+STORE_ADMIN_URL=/control/store      # makes the store's Admin button link to the app
+```
+
+With `STORE_ADMIN_URL` set, `tools/build_store.py` renders the Admin button as a
+link to `/control/store` and omits the token dialog entirely; leave it unset for
+the static-only deployment, which keeps that dialog.
+
+#### Deploying it
+
+[Render](https://render.com) runs this app from the repository with no changes to
+the code — `render.yaml` at the root is a blueprint for that. Either create a
+**New → Blueprint** and point it at the repo, or make a Web Service by hand:
+
+| Setting | Value |
+| --- | --- |
+| Build command | `pip install -r requirements.txt` |
+| Start command | `uvicorn main:app --host 0.0.0.0 --port $PORT` |
+| Health check | `/health` |
+
+Then set these environment variables on the service:
+
+- `CONTROL_PANEL_PASSWORD` — the password for the first `admin` account (8+ chars).
+  It only creates the account; after that, sign in as `admin` with it.
+- `SESSION_SECRET` — `python -c "import secrets; print(secrets.token_urlsafe(48))"`.
+- `STORE_ADMIN_URL=/control/store`, `STORE_REPO`, `STORE_GITHUB_TOKEN` — as above.
+- Leave `SEED_DEMO_USERS` unset: demo accounts share one password.
+
+Notes that matter in production:
+
+- The free plan sleeps after inactivity, so the first visit takes a few seconds.
+- Its disk is ephemeral: accounts created in `var/` and anything else under
+  `DATA_DIR` are lost on redeploy. Set `DATA_DIR` to a mounted disk on a paid
+  instance if you need them to survive. Store edits are safe either way once
+  `STORE_GITHUB_TOKEN` is set, because they live in the repository.
+- Put HTTPS in front (Render does this) and do not set `SEED_DEMO_USERS` on a
+  public instance.
+
 ### Currency
 
 Prices are in **Philippine peso (PHP)**, with a USD equivalent shown alongside

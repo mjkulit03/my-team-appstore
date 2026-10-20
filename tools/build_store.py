@@ -40,6 +40,14 @@ def repo_slug(repo_url: str) -> str:
     return cleaned
 
 
+def _repo_path(path: Path) -> str:
+    """Path relative to the repository root, for the in-editor save message."""
+    try:
+        return path.resolve().relative_to(ROOT).as_posix()
+    except ValueError:
+        return path.name
+
+
 def build(destination: Path | None = None, content: dict | None = None) -> Path:
     """Render the store and return the path written."""
     document = content if content is not None else store_content.load()
@@ -79,8 +87,11 @@ def build(destination: Path | None = None, content: dict | None = None) -> Path:
         bundle_usd=f"{bundle_usd:,.2f}",
         github_url=os.getenv("STORE_GITHUB_URL", DEFAULT_GITHUB),
         repo_url=repo_url,
+        # Point this at the hosted control panel to replace the token dialog with
+        # a normal username/password sign-in (see api/storeadmin.py).
+        admin_url=(os.getenv("STORE_ADMIN_URL") or "").strip(),
         repo_slug=repo_slug(repo_url),
-        content_path=store_content.CONTENT_PATH.relative_to(ROOT).as_posix(),
+        content_path=_repo_path(store_content.CONTENT_PATH),
         content_json=store_content.dumps(document),
         products_json=json.dumps(
             [

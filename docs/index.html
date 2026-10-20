@@ -920,7 +920,10 @@
   var baseContent = readJSON('store-content') || {};
   var products = readJSON('store-products') || [];
 
+  // On a hosted deployment the Admin button is a plain link to the app's
+  // username/password sign-in, so there is no token editor to wire up here.
   var openBtn = document.getElementById('admin-open');
+  if (!openBtn) { return; }
   var openLabel = document.getElementById('admin-open-label');
   var login = document.getElementById('admin-login');
   var loginForm = document.getElementById('admin-login-form');

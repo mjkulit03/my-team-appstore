@@ -250,11 +250,18 @@ def quotation_page(request: Request, quotation_id: str) -> HTMLResponse:
 
 
 @router.get("/control/login", response_class=HTMLResponse)
-def login_form(request: Request, error: str = "") -> HTMLResponse:
+def login_form(request: Request, error: str = "", next: str = "") -> HTMLResponse:
     problem = auth.panel_problem()
     demo = os.getenv("SEED_DEMO_USERS", "").strip().lower() in {"1", "true", "yes", "on"}
     return templates.TemplateResponse(
-        request, "login.html", {"error": error, "problem": problem, "demo_enabled": demo}
+        request,
+        "login.html",
+        {
+            "error": error,
+            "problem": problem,
+            "demo_enabled": demo,
+            "next": _safe_next(next),
+        },
     )
 
 
@@ -263,31 +270,50 @@ def login_submit(
     request: Request,
     username: str = Form(...),
     password: str = Form(...),
+    next: str = Form(""),
 ) -> HTMLResponse | RedirectResponse:
     problem = auth.panel_problem()
     if problem:
         return templates.TemplateResponse(
-            request, "login.html", {"error": "", "problem": problem, "demo_enabled": False}
+            request, "login.html", {"error": "", "problem": problem, "demo_enabled": False, "next": ""}
         )
     if auth.is_rate_limited(request):
         return templates.TemplateResponse(
             request,
             "login.html",
-            {"error": "Too many attempts. Try again in a few minutes.", "problem": None, "demo_enabled": False},
+            {
+                "error": "Too many attempts. Try again in a few minutes.",
+                "problem": None,
+                "demo_enabled": False,
+                "next": _safe_next(next),
+            },
         )
 
     user = users_module.authenticate(username, password)
     if user is not None:
         auth.clear_failures(request)
         auth.login(request, user.username)
-        return RedirectResponse(url="/control/overview", status_code=303)
+        return RedirectResponse(url=_safe_next(next) or "/control/overview", status_code=303)
 
     auth.record_failure(request)
     return templates.TemplateResponse(
         request,
         "login.html",
-        {"error": "Incorrect username or password.", "problem": None, "demo_enabled": False},
+        {
+            "error": "Incorrect username or password.",
+            "problem": None,
+            "demo_enabled": False,
+            "next": _safe_next(next),
+        },
     )
+
+
+def _safe_next(target: str) -> str:
+    """Only local control-panel destinations, so `next` cannot become an open redirect."""
+    candidate = (target or "").strip()
+    if not candidate.startswith("/control/") or candidate.startswith("//"):
+        return ""
+    return candidate
 
 
 # --------------------------------------------------- user management page
