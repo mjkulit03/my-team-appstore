@@ -1,0 +1,135 @@
+{
+  "copy": {
+    "brand_tagline": "Business systems, ready to deploy",
+    "bundle_body": "One contract for all {count} systems, one deployment, one support line. Shared staff and asset records mean the systems stop contradicting each other, and every new system you add later plugs into the same foundation.",
+    "bundle_heading": "Run the whole suite.",
+    "catalog_description": "Every system is sold on its own, or run several on one shared record of your stock, staff and documents.",
+    "catalog_heading": "The catalog",
+    "footer_line": "{count} business systems. Prices in Philippine peso (PHP), VAT inclusive.",
+    "hero_eyebrow": "{count} systems · one store",
+    "hero_headline": "Software your business can run on day one.",
+    "hero_lede": "Inventory, assets, HR, projects, retail, attendance, records and security awareness — built for Philippine organisations, delivered on-premise or offline, and priced in pesos with no per-user surprises."
+  },
+  "labels": {
+    "clinic-inventory-system": {
+      "category": "Healthcare Inventory",
+      "name": "Clinic Inventory System",
+      "tagline": "Track stock, expiry and controlled drugs across every clinic room."
+    },
+    "cybersecurity-games": {
+      "category": "Security Awareness",
+      "name": "Cybersecurity Games",
+      "tagline": "Security awareness staff actually finish, with proof they did."
+    },
+    "file-tracking-system": {
+      "category": "Records & Document Management",
+      "name": "Online File Tracking System",
+      "tagline": "Every physical file accounted for, from registration to archive."
+    },
+    "grocery-sales-inventory-system": {
+      "category": "Retail & Sales",
+      "name": "Grocery Sales and Inventory Management System",
+      "tagline": "Retail stock and sales that reconcile at close, every close."
+    },
+    "hardware-inventory-system": {
+      "category": "IT Asset Management",
+      "name": "Hardware Management System",
+      "tagline": "Know exactly what hardware you own, where it is, and who has it."
+    },
+    "hris": {
+      "category": "HR & Payroll",
+      "name": "HRIS — Human Resource Information System",
+      "tagline": "One employee record from hire to exit, with payroll-ready data."
+    },
+    "it-asset-management-system": {
+      "category": "IT Asset Management",
+      "name": "IT Asset Management System",
+      "tagline": "One source of truth for software licences, contracts and devices."
+    },
+    "office-supplies-inventory-system": {
+      "category": "Inventory & Procurement",
+      "name": "Office Supplies Inventory System",
+      "tagline": "Stop re-buying printer paper you already have in the cupboard."
+    },
+    "offline-pos-system": {
+      "category": "Retail & Sales",
+      "name": "Offline POS System",
+      "tagline": "Keep selling when the internet drops, reconcile when it returns."
+    },
+    "offsite-login-timekeeping-system": {
+      "category": "Time & Attendance",
+      "name": "Offsite Log-In Management System (Time Keeping)",
+      "tagline": "Accurate attendance for staff working offsite, with no spreadsheets."
+    },
+    "project-management-system": {
+      "category": "Project & Work Management",
+      "name": "Project Management System",
+      "tagline": "Scope, schedule and budget on one board your client can trust."
+    },
+    "service-management-request-system": {
+      "category": "Service Management",
+      "name": "Service Management Request System",
+      "tagline": "Every request logged, owned, prioritised and closed on time."
+    },
+    "student-record-facial-recognition-system": {
+      "category": "Education & Attendance",
+      "name": "Student Record with Facial Recognition System",
+      "tagline": "Attendance and student records in one secure, auditable place."
+    }
+  },
+  "prices": {
+    "clinic-inventory-system": {
+      "price_month": 2490,
+      "price_setup": 16000
+    },
+    "cybersecurity-games": {
+      "price_month": 1290,
+      "price_setup": 6000
+    },
+    "file-tracking-system": {
+      "price_month": 1490,
+      "price_setup": 8000
+    },
+    "grocery-sales-inventory-system": {
+      "price_month": 1790,
+      "price_setup": 12000
+    },
+    "hardware-inventory-system": {
+      "price_month": 1490,
+      "price_setup": 9000
+    },
+    "hris": {
+      "price_month": 2690,
+      "price_setup": 18000
+    },
+    "it-asset-management-system": {
+      "price_month": 2890,
+      "price_setup": 18000
+    },
+    "office-supplies-inventory-system": {
+      "price_month": 1190,
+      "price_setup": 6000
+    },
+    "offline-pos-system": {
+      "price_month": 1590,
+      "price_setup": 10000
+    },
+    "offsite-login-timekeeping-system": {
+      "price_month": 1490,
+      "price_setup": 8000
+    },
+    "project-management-system": {
+      "price_month": 1990,
+      "price_setup": 12000
+    },
+    "service-management-request-system": {
+      "price_month": 1990,
+      "price_setup": 12000
+    },
+    "student-record-facial-recognition-system": {
+      "price_month": 3290,
+      "price_setup": 24000
+    }
+  },
+  "version": 1
+}

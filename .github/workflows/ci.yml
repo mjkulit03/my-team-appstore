@@ -35,7 +35,13 @@ jobs:
           pip install -r requirements.txt
 
       - name: Byte-compile everything
-        run: python -m compileall -q agents api catalog notifications main.py schemas.py store.py auth.py
+        run: python -m compileall -q agents api catalog notifications main.py schemas.py store.py auth.py store_content.py tools/build_store.py
+
+      - name: Validate the store content file
+        run: python -c "import store_content; store_content.load(); print('store-content.json is valid')"
+
+      - name: Build the app store
+        run: python tools/build_store.py
 
       - name: Run tests
         env:

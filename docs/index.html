@@ -21,6 +21,7 @@
     --brass-deep:#6E5327;
     --brass-tint:#F1E8D3;
     --ok:#2F6B4F;
+    --danger:#9B2C2C;
     --radius:14px;
     --shadow:0 1px 2px rgba(16,27,51,.05), 0 10px 30px rgba(16,27,51,.07);
     --serif:Georgia, 'Times New Roman', serif;
@@ -46,13 +47,22 @@
   .site-nav{display:flex;align-items:center;gap:18px;font-size:13.5px;font-weight:600}
   .site-nav a{text-decoration:none;color:var(--slate)}
   .site-nav a:hover{color:var(--ink)}
-  .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);border-radius:8px;padding:10px 16px;font-size:13.5px;font-weight:650;text-decoration:none;cursor:pointer;transition:transform .12s ease, border-color .12s ease, background .12s ease}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);border-radius:8px;padding:10px 16px;font-size:13.5px;font-weight:650;text-decoration:none;cursor:pointer;transition:transform .12s ease, border-color .12s ease, background .12s ease;font-family:inherit}
   .btn:hover{border-color:var(--navy);transform:translateY(-1px)}
   .btn-primary{background:var(--navy);border-color:var(--navy);color:#fff}
   .btn-primary:hover{background:var(--navy-deep);border-color:var(--navy-deep)}
   .btn-small{padding:7px 12px;font-size:12.5px}
   .btn-ghost{background:transparent;border-color:rgba(255,255,255,.28);color:#F7F5EF}
   .btn-ghost:hover{border-color:#F7F5EF;background:rgba(255,255,255,.06)}
+  .btn[disabled]{opacity:.5;cursor:not-allowed;transform:none}
+  .header-actions{display:flex;align-items:center;gap:9px}
+
+  /* admin entry point, top right */
+  .admin-btn{position:relative;background:transparent;border-color:var(--line-strong);color:var(--slate)}
+  .admin-btn:hover{color:var(--ink)}
+  .admin-btn svg{width:14px;height:14px}
+  .admin-btn.is-signed-in{background:var(--brass-tint);border-color:var(--brass);color:var(--brass-deep)}
+  .admin-btn.is-signed-in::after{content:"";position:absolute;top:-3px;right:-3px;width:8px;height:8px;border-radius:50%;background:var(--ok);border:2px solid var(--paper)}
 
   /* hero */
   .hero{background:var(--navy-deep);color:#F7F5EF;position:relative;overflow:hidden}
@@ -147,12 +157,55 @@
   .footer-links{display:flex;gap:16px;font-size:12.8px;font-weight:600}
   .footer-links a{text-decoration:none;color:var(--navy)}
 
+  /* ------------------------------------------------ admin: dialogs */
+  dialog{border:none;padding:0;background:transparent;color:var(--ink)}
+  dialog::backdrop{background:rgba(16,27,51,.55);backdrop-filter:blur(2px)}
+  .panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:0 24px 60px rgba(16,27,51,.28);overflow:hidden}
+  .panel-head{display:flex;align-items:center;gap:12px;padding:18px 22px;border-bottom:1px solid var(--line);background:var(--surface-2)}
+  .panel-head h2{margin:0;font-family:var(--serif);font-size:19px;letter-spacing:-.01em}
+  .panel-head .close{margin-left:auto;border:1px solid var(--line-strong);background:var(--surface);border-radius:8px;width:32px;height:32px;cursor:pointer;font-size:17px;line-height:1;color:var(--slate);font-family:inherit}
+  .panel-head .close:hover{color:var(--ink);border-color:var(--navy)}
+  .panel-body{padding:22px}
+  .panel-foot{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:16px 22px;border-top:1px solid var(--line);background:var(--surface-2)}
+
+  /* login dialog */
+  #admin-login .panel{width:min(520px, calc(100vw - 32px))}
+  .field{margin-bottom:16px}
+  .field label{display:block;font-size:12.5px;font-weight:700;letter-spacing:.02em;margin-bottom:5px}
+  .field input,.field textarea,.field select{width:100%;padding:10px 12px;border:1px solid var(--line-strong);border-radius:8px;font-family:inherit;font-size:13.5px;background:var(--surface);color:var(--ink)}
+  .field input:focus,.field textarea:focus{outline:2px solid var(--brass);outline-offset:1px;border-color:var(--brass)}
+  .field textarea{resize:vertical;min-height:64px;line-height:1.5}
+  .field .hint{font-size:12px;color:var(--slate);margin:6px 0 0;line-height:1.45}
+  .field .hint code{font-family:var(--mono);font-size:11.5px;background:var(--surface-2);padding:1px 5px;border-radius:4px}
+  .status{font-size:12.5px;margin:0;min-height:18px;color:var(--slate)}
+  .status.is-error{color:var(--danger);font-weight:600}
+  .status.is-ok{color:var(--ok);font-weight:600}
+  .status a{color:inherit;text-decoration:underline}
+
+  /* editor drawer */
+  #admin-editor .panel{width:min(880px, calc(100vw - 24px));max-height:calc(100vh - 48px);display:flex;flex-direction:column}
+  .editor-body{padding:0;overflow:auto;flex:1;background:var(--paper)}
+  .editor-section{padding:20px 22px;border-bottom:1px solid var(--line);background:var(--surface)}
+  .editor-section h3{margin:0 0 12px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--brass-deep);font-weight:750}
+  .copy-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .copy-grid .span-2{grid-column:1 / -1}
+  .product-row{display:grid;grid-template-columns:34px 1.4fr 1fr 132px 132px;gap:10px;align-items:start;padding:12px 0;border-top:1px dashed var(--line)}
+  .product-row:first-of-type{border-top:none}
+  .product-row .icon{font-size:19px;line-height:1.9;text-align:center}
+  .product-row .money input{text-align:right;font-variant-numeric:tabular-nums}
+  .product-row .bad{outline:2px solid var(--danger);outline-offset:0;border-color:var(--danger)}
+  .product-head{display:grid;grid-template-columns:34px 1.4fr 1fr 132px 132px;gap:10px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--slate);font-weight:700;padding-bottom:6px}
+  .editor-meta{font-size:12px;color:var(--slate);margin-left:auto}
+
   @media (max-width:820px){
     .band-inner{grid-template-columns:1fr;padding:30px 24px}
     .blocks{grid-template-columns:1fr}
     .site-nav{display:none}
     .hero .wrap{padding:48px 0 42px}
     .result-count{display:none}
+    .copy-grid{grid-template-columns:1fr}
+    .product-row,.product-head{grid-template-columns:28px 1fr 88px 88px}
+    .product-row .tagline-cell,.product-head .tagline-head{display:none}
   }
 </style>
 </head>
@@ -173,7 +226,13 @@
       <a href="#how">How it works</a>
       <a href="#faq">FAQ</a>
     </nav>
-    <a class="btn btn-small" href="https://github.com/mjkulit03" target="_blank" rel="noopener">GitHub ↗</a>
+    <div class="header-actions">
+      <button class="btn btn-small admin-btn" id="admin-open" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><rect x="4" y="10.5" width="16" height="10" rx="2"></rect><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"></path></svg>
+        <span id="admin-open-label">Admin</span>
+      </button>
+      <a class="btn btn-small" href="https://github.com/mjkulit03" target="_blank" rel="noopener">GitHub ↗</a>
+    </div>
   </div>
 </header>
 
@@ -182,11 +241,7 @@
     <div class="wrap">
       <span class="eyebrow">13 systems · one store</span>
       <h1>Software your business can run on day one.</h1>
-      <p class="lede">
-        Inventory, assets, HR, projects, retail, attendance, records and security
-        awareness — built for Philippine organisations, delivered on-premise or offline,
-        and priced in pesos with no per-user surprises.
-      </p>
+      <p class="lede">Inventory, assets, HR, projects, retail, attendance, records and security awareness — built for Philippine organisations, delivered on-premise or offline, and priced in pesos with no per-user surprises.</p>
       <div class="hero-actions">
         <a class="btn btn-primary" href="#catalog">Browse all 13 systems</a>
         <a class="btn btn-ghost" href="#bundle">See the whole-suite price</a>
@@ -536,11 +591,7 @@
       <div class="band-inner">
         <div>
           <h2>Run the whole suite.</h2>
-          <p>
-            One contract for all 13 systems, one deployment, one support line.
-            Shared staff and asset records mean the systems stop contradicting each other,
-            and every new system you add later plugs into the same foundation.
-          </p>
+          <p>One contract for all 13 systems, one deployment, one support line. Shared staff and asset records mean the systems stop contradicting each other, and every new system you add later plugs into the same foundation.</p>
           <p class="small" style="color:#A9B2C2;margin:0">
             One-off implementation ₱159,000 · annual maintenance retainer 30% of contract · VAT inclusive
           </p>
@@ -614,8 +665,205 @@
   </div>
 </footer>
 
+<!-- ------------------------------------------------------------ admin UI -->
+<dialog id="admin-login" aria-labelledby="admin-login-title">
+  <div class="panel">
+    <div class="panel-head">
+      <h2 id="admin-login-title">Administrator sign-in</h2>
+      <button class="close" type="button" data-close aria-label="Close">×</button>
+    </div>
+    <form id="admin-login-form" class="panel-body" novalidate>
+      <div class="field">
+        <label for="admin-token">GitHub token</label>
+        <input id="admin-token" type="password" autocomplete="off" spellcheck="false" placeholder="github_pat_… or ghp_…">
+        <p class="hint">
+          Create a <strong>fine-grained token</strong> for
+          <code>mjkulit03/my-team-appstore</code> with <strong>Contents: Read and write</strong>
+          (<a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">create one</a>).
+          It is kept in this browser tab only, never written to the repository.
+        </p>
+      </div>
+      <p class="status" id="admin-login-status" role="status"></p>
+    </form>
+    <div class="panel-foot">
+      <button class="btn" type="button" data-close>Cancel</button>
+      <button class="btn btn-primary" type="submit" form="admin-login-form" id="admin-login-submit">Sign in</button>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="admin-editor" aria-labelledby="admin-editor-title">
+  <div class="panel">
+    <div class="panel-head">
+      <h2 id="admin-editor-title">Store editor</h2>
+      <span class="editor-meta" id="editor-meta"></span>
+      <button class="close" type="button" data-close aria-label="Close">×</button>
+    </div>
+    <div class="editor-body">
+      <section class="editor-section">
+        <h3>Page copy</h3>
+        <div class="copy-grid" id="copy-fields"></div>
+      </section>
+      <section class="editor-section">
+        <h3>Prices &amp; labels</h3>
+        <div class="product-head">
+          <span></span><span>Name</span><span>Tagline / category</span>
+          <span style="text-align:right">₱ / month</span><span style="text-align:right">₱ setup</span>
+        </div>
+        <div id="product-fields"></div>
+      </section>
+    </div>
+    <div class="panel-foot">
+      <p class="status" id="editor-status" role="status"></p>
+      <button class="btn btn-small" type="button" id="admin-reset">Reset to catalog</button>
+      <button class="btn btn-small" type="button" id="admin-signout">Sign out</button>
+      <button class="btn btn-primary btn-small" type="button" id="admin-save">Save &amp; publish</button>
+    </div>
+  </div>
+</dialog>
+
+<script type="application/json" id="store-content">{
+  "copy": {
+    "brand_tagline": "Business systems, ready to deploy",
+    "bundle_body": "One contract for all {count} systems, one deployment, one support line. Shared staff and asset records mean the systems stop contradicting each other, and every new system you add later plugs into the same foundation.",
+    "bundle_heading": "Run the whole suite.",
+    "catalog_description": "Every system is sold on its own, or run several on one shared record of your stock, staff and documents.",
+    "catalog_heading": "The catalog",
+    "footer_line": "{count} business systems. Prices in Philippine peso (PHP), VAT inclusive.",
+    "hero_eyebrow": "{count} systems · one store",
+    "hero_headline": "Software your business can run on day one.",
+    "hero_lede": "Inventory, assets, HR, projects, retail, attendance, records and security awareness — built for Philippine organisations, delivered on-premise or offline, and priced in pesos with no per-user surprises."
+  },
+  "labels": {
+    "clinic-inventory-system": {
+      "category": "Healthcare Inventory",
+      "name": "Clinic Inventory System",
+      "tagline": "Track stock, expiry and controlled drugs across every clinic room."
+    },
+    "cybersecurity-games": {
+      "category": "Security Awareness",
+      "name": "Cybersecurity Games",
+      "tagline": "Security awareness staff actually finish, with proof they did."
+    },
+    "file-tracking-system": {
+      "category": "Records & Document Management",
+      "name": "Online File Tracking System",
+      "tagline": "Every physical file accounted for, from registration to archive."
+    },
+    "grocery-sales-inventory-system": {
+      "category": "Retail & Sales",
+      "name": "Grocery Sales and Inventory Management System",
+      "tagline": "Retail stock and sales that reconcile at close, every close."
+    },
+    "hardware-inventory-system": {
+      "category": "IT Asset Management",
+      "name": "Hardware Management System",
+      "tagline": "Know exactly what hardware you own, where it is, and who has it."
+    },
+    "hris": {
+      "category": "HR & Payroll",
+      "name": "HRIS — Human Resource Information System",
+      "tagline": "One employee record from hire to exit, with payroll-ready data."
+    },
+    "it-asset-management-system": {
+      "category": "IT Asset Management",
+      "name": "IT Asset Management System",
+      "tagline": "One source of truth for software licences, contracts and devices."
+    },
+    "office-supplies-inventory-system": {
+      "category": "Inventory & Procurement",
+      "name": "Office Supplies Inventory System",
+      "tagline": "Stop re-buying printer paper you already have in the cupboard."
+    },
+    "offline-pos-system": {
+      "category": "Retail & Sales",
+      "name": "Offline POS System",
+      "tagline": "Keep selling when the internet drops, reconcile when it returns."
+    },
+    "offsite-login-timekeeping-system": {
+      "category": "Time & Attendance",
+      "name": "Offsite Log-In Management System (Time Keeping)",
+      "tagline": "Accurate attendance for staff working offsite, with no spreadsheets."
+    },
+    "project-management-system": {
+      "category": "Project & Work Management",
+      "name": "Project Management System",
+      "tagline": "Scope, schedule and budget on one board your client can trust."
+    },
+    "service-management-request-system": {
+      "category": "Service Management",
+      "name": "Service Management Request System",
+      "tagline": "Every request logged, owned, prioritised and closed on time."
+    },
+    "student-record-facial-recognition-system": {
+      "category": "Education & Attendance",
+      "name": "Student Record with Facial Recognition System",
+      "tagline": "Attendance and student records in one secure, auditable place."
+    }
+  },
+  "prices": {
+    "clinic-inventory-system": {
+      "price_month": 2490,
+      "price_setup": 16000
+    },
+    "cybersecurity-games": {
+      "price_month": 1290,
+      "price_setup": 6000
+    },
+    "file-tracking-system": {
+      "price_month": 1490,
+      "price_setup": 8000
+    },
+    "grocery-sales-inventory-system": {
+      "price_month": 1790,
+      "price_setup": 12000
+    },
+    "hardware-inventory-system": {
+      "price_month": 1490,
+      "price_setup": 9000
+    },
+    "hris": {
+      "price_month": 2690,
+      "price_setup": 18000
+    },
+    "it-asset-management-system": {
+      "price_month": 2890,
+      "price_setup": 18000
+    },
+    "office-supplies-inventory-system": {
+      "price_month": 1190,
+      "price_setup": 6000
+    },
+    "offline-pos-system": {
+      "price_month": 1590,
+      "price_setup": 10000
+    },
+    "offsite-login-timekeeping-system": {
+      "price_month": 1490,
+      "price_setup": 8000
+    },
+    "project-management-system": {
+      "price_month": 1990,
+      "price_setup": 12000
+    },
+    "service-management-request-system": {
+      "price_month": 1990,
+      "price_setup": 12000
+    },
+    "student-record-facial-recognition-system": {
+      "price_month": 3290,
+      "price_setup": 24000
+    }
+  },
+  "version": 1
+}
+</script>
+<script type="application/json" id="store-products">[{"slug":"hardware-inventory-system","icon":"🖥️","name":"Hardware Management System","tagline":"Know exactly what hardware you own, where it is, and who has it.","category":"IT Asset Management","price_month":1490,"price_setup":9000},{"slug":"clinic-inventory-system","icon":"🩺","name":"Clinic Inventory System","tagline":"Track stock, expiry and controlled drugs across every clinic room.","category":"Healthcare Inventory","price_month":2490,"price_setup":16000},{"slug":"office-supplies-inventory-system","icon":"📦","name":"Office Supplies Inventory System","tagline":"Stop re-buying printer paper you already have in the cupboard.","category":"Inventory & Procurement","price_month":1190,"price_setup":6000},{"slug":"it-asset-management-system","icon":"🗂️","name":"IT Asset Management System","tagline":"One source of truth for software licences, contracts and devices.","category":"IT Asset Management","price_month":2890,"price_setup":18000},{"slug":"service-management-request-system","icon":"🎫","name":"Service Management Request System","tagline":"Every request logged, owned, prioritised and closed on time.","category":"Service Management","price_month":1990,"price_setup":12000},{"slug":"offsite-login-timekeeping-system","icon":"⏱️","name":"Offsite Log-In Management System (Time Keeping)","tagline":"Accurate attendance for staff working offsite, with no spreadsheets.","category":"Time & Attendance","price_month":1490,"price_setup":8000},{"slug":"grocery-sales-inventory-system","icon":"🛒","name":"Grocery Sales and Inventory Management System","tagline":"Retail stock and sales that reconcile at close, every close.","category":"Retail & Sales","price_month":1790,"price_setup":12000},{"slug":"student-record-facial-recognition-system","icon":"🎓","name":"Student Record with Facial Recognition System","tagline":"Attendance and student records in one secure, auditable place.","category":"Education & Attendance","price_month":3290,"price_setup":24000},{"slug":"hris","icon":"🧑‍💼","name":"HRIS — Human Resource Information System","tagline":"One employee record from hire to exit, with payroll-ready data.","category":"HR & Payroll","price_month":2690,"price_setup":18000},{"slug":"project-management-system","icon":"📋","name":"Project Management System","tagline":"Scope, schedule and budget on one board your client can trust.","category":"Project & Work Management","price_month":1990,"price_setup":12000},{"slug":"offline-pos-system","icon":"🧾","name":"Offline POS System","tagline":"Keep selling when the internet drops, reconcile when it returns.","category":"Retail & Sales","price_month":1590,"price_setup":10000},{"slug":"cybersecurity-games","icon":"🛡️","name":"Cybersecurity Games","tagline":"Security awareness staff actually finish, with proof they did.","category":"Security Awareness","price_month":1290,"price_setup":6000},{"slug":"file-tracking-system","icon":"🗃️","name":"Online File Tracking System","tagline":"Every physical file accounted for, from registration to archive.","category":"Records & Document Management","price_month":1490,"price_setup":8000}]</script>
+<script type="application/json" id="store-copy-defaults">{"brand_tagline": "Business systems, ready to deploy", "bundle_body": "One contract for all {count} systems, one deployment, one support line. Shared staff and asset records mean the systems stop contradicting each other, and every new system you add later plugs into the same foundation.", "bundle_heading": "Run the whole suite.", "catalog_description": "Every system is sold on its own, or run several on one shared record of your stock, staff and documents.", "catalog_heading": "The catalog", "footer_line": "{count} business systems. Prices in Philippine peso (PHP), VAT inclusive.", "hero_eyebrow": "{count} systems \u00b7 one store", "hero_headline": "Software your business can run on day one.", "hero_lede": "Inventory, assets, HR, projects, retail, attendance, records and security awareness \u2014 built for Philippine organisations, delivered on-premise or offline, and priced in pesos with no per-user surprises."}</script>
+
 <script>
 (function () {
+  // ------------------------------------------------------------ storefront
   var cards = Array.prototype.slice.call(document.querySelectorAll('.app-card'));
   var search = document.getElementById('search');
   var chips = Array.prototype.slice.call(document.querySelectorAll('.chip'));
@@ -623,7 +871,7 @@
   var count = document.getElementById('result-count');
   var category = '';
 
-  function apply() {
+  function applyFilters() {
     var query = (search.value || '').trim().toLowerCase();
     var shown = 0;
     cards.forEach(function (card) {
@@ -637,17 +885,368 @@
     count.textContent = shown + (shown === 1 ? ' system' : ' systems');
   }
 
-  search.addEventListener('input', apply);
-
+  search.addEventListener('input', applyFilters);
   chips.forEach(function (chip) {
     chip.addEventListener('click', function () {
       category = chip.getAttribute('data-category') || '';
       chips.forEach(function (other) { other.classList.toggle('is-active', other === chip); });
-      apply();
+      applyFilters();
+    });
+  });
+  applyFilters();
+
+  // ------------------------------------------------------------ admin
+  var REPO = 'mjkulit03/my-team-appstore';
+  var CONTENT_PATH = 'docs/store-content.json';
+  var BRANCH = 'main';
+  var TOKEN_KEY = 'mt.store.token';
+  var MAX_PRICE = 10000000;
+
+  var COPY_FIELDS = [
+    ['hero_headline', 'Hero headline', 'text'],
+    ['hero_eyebrow', 'Hero eyebrow', 'text'],
+    ['hero_lede', 'Hero paragraph', 'area'],
+    ['catalog_heading', 'Catalog heading', 'text'],
+    ['catalog_description', 'Catalog description', 'area'],
+    ['bundle_heading', 'Bundle heading', 'text'],
+    ['bundle_body', 'Bundle paragraph', 'area'],
+    ['brand_tagline', 'Logo tagline', 'text'],
+    ['footer_line', 'Footer line', 'text']
+  ];
+
+  var defaults = readJSON('store-copy-defaults') || {};
+  var baseContent = readJSON('store-content') || {};
+  var products = readJSON('store-products') || [];
+
+  var openBtn = document.getElementById('admin-open');
+  var openLabel = document.getElementById('admin-open-label');
+  var login = document.getElementById('admin-login');
+  var loginForm = document.getElementById('admin-login-form');
+  var tokenInput = document.getElementById('admin-token');
+  var loginStatus = document.getElementById('admin-login-status');
+  var loginSubmit = document.getElementById('admin-login-submit');
+  var editor = document.getElementById('admin-editor');
+  var editorStatus = document.getElementById('editor-status');
+  var editorMeta = document.getElementById('editor-meta');
+
+  var token = sessionStorage.getItem(TOKEN_KEY) || '';
+  var sha = null;
+
+  function readJSON(id) {
+    var node = document.getElementById(id);
+    if (!node) { return null; }
+    try { return JSON.parse(node.textContent); } catch (e) { return null; }
+  }
+
+  function setStatus(node, text, kind) {
+    node.className = 'status' + (kind ? ' is-' + kind : '');
+    node.textContent = text || '';
+  }
+
+  function api(path, options) {
+    options = options || {};
+    var headers = {
+      Authorization: 'Bearer ' + token,
+      Accept: 'application/vnd.github+json',
+      'X-GitHub-Api-Version': '2022-11-28'
+    };
+    if (options.body) { headers['Content-Type'] = 'application/json'; }
+    return fetch('https://api.github.com/repos/' + REPO + path, {
+      method: options.method || 'GET',
+      headers: headers,
+      body: options.body,
+      cache: 'no-store'
+    }).then(function (res) {
+      return res.json().catch(function () { return {}; }).then(function (data) {
+        if (!res.ok) {
+          var message = (data && data.message) || ('GitHub returned ' + res.status);
+          var error = new Error(message);
+          error.status = res.status;
+          throw error;
+        }
+        return data;
+      });
+    });
+  }
+
+  function toBase64(text) {
+    var bytes = new TextEncoder().encode(text);
+    var binary = '';
+    for (var i = 0; i < bytes.length; i += 1) { binary += String.fromCharCode(bytes[i]); }
+    return btoa(binary);
+  }
+
+  // ------------------------------------------------------------ sign in
+  function openLogin() {
+    setStatus(loginStatus, '', '');
+    tokenInput.value = '';
+    login.showModal();
+    tokenInput.focus();
+  }
+
+  loginForm.addEventListener('submit', function (event) {
+    event.preventDefault();
+    var candidate = tokenInput.value.trim();
+    if (!candidate) {
+      setStatus(loginStatus, 'Paste a token to continue.', 'error');
+      return;
+    }
+    loginSubmit.disabled = true;
+    setStatus(loginStatus, 'Checking token…', '');
+    token = candidate;
+    api('', {}).then(function (repo) {
+      var perms = repo.permissions || {};
+      if (!perms.push && !perms.admin) {
+        throw new Error('That token can read this repository but not write to it. Set Contents: Read and write.');
+      }
+      return api('/contents/' + CONTENT_PATH + '?ref=' + BRANCH);
+    }).then(function (file) {
+      sha = file && file.sha ? file.sha : null;
+      sessionStorage.setItem(TOKEN_KEY, candidate);
+      login.close();
+      renderEditor();
+      markSignedIn();
+      editor.showModal();
+    }).catch(function (error) {
+      token = '';
+      setStatus(loginStatus, error.message || 'Sign-in failed.', 'error');
+    }).then(function () {
+      loginSubmit.disabled = false;
     });
   });
 
-  apply();
+  function markSignedIn() {
+    openLabel.textContent = 'Editing';
+    openBtn.classList.add('is-signed-in');
+  }
+
+  function markSignedOut() {
+    openLabel.textContent = 'Admin';
+    openBtn.classList.remove('is-signed-in');
+  }
+
+  openBtn.addEventListener('click', function () {
+    if (!token) { openLogin(); return; }
+    renderEditor();
+    markSignedIn();
+    editor.showModal();
+  });
+
+  document.querySelectorAll('dialog [data-close]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var dialog = btn.closest('dialog');
+      if (dialog) { dialog.close(); }
+    });
+  });
+
+  // ------------------------------------------------------------ editor
+  function currentDocument() {
+    return {
+      version: 1,
+      prices: baseContent.prices || {},
+      labels: baseContent.labels || {},
+      copy: baseContent.copy || {}
+    };
+  }
+
+  function copyValue(key) {
+    var doc = currentDocument();
+    return Object.prototype.hasOwnProperty.call(doc.copy, key) ? doc.copy[key] : (defaults[key] || '');
+  }
+
+  function renderEditor() {
+    var copyHost = document.getElementById('copy-fields');
+    copyHost.innerHTML = '';
+    COPY_FIELDS.forEach(function (spec) {
+      var key = spec[0], label = spec[1], kind = spec[2];
+      var field = document.createElement('div');
+      field.className = 'field' + (kind === 'area' ? ' span-2' : '');
+      var id = 'copy-' + key;
+      var input = document.createElement(kind === 'area' ? 'textarea' : 'input');
+      input.id = id;
+      input.value = copyValue(key);
+      input.setAttribute('data-copy-key', key);
+      var hint = document.createElement('p');
+      hint.className = 'hint';
+      hint.textContent = key === 'hero_eyebrow' || key === 'bundle_body' || key === 'footer_line'
+        ? 'Use {count} where the number of systems should appear.'
+        : '';
+      field.appendChild(labelNode(id, label));
+      field.appendChild(input);
+      if (hint.textContent) { field.appendChild(hint); }
+      copyHost.appendChild(field);
+    });
+
+    var productHost = document.getElementById('product-fields');
+    productHost.innerHTML = '';
+    products.forEach(function (product) {
+      var row = document.createElement('div');
+      row.className = 'product-row';
+      row.setAttribute('data-slug', product.slug);
+
+      var icon = document.createElement('div');
+      icon.className = 'icon';
+      icon.textContent = product.icon || '▦';
+      row.appendChild(icon);
+
+      row.appendChild(inputCell('name', product.slug, product.name, 'Name'));
+
+      var tagCell = document.createElement('div');
+      tagCell.className = 'tagline-cell';
+      tagCell.appendChild(inputCell('tagline', product.slug, product.tagline, 'Tagline'));
+      var cat = inputCell('category', product.slug, product.category, 'Category');
+      cat.style.marginTop = '6px';
+      tagCell.appendChild(cat);
+      row.appendChild(tagCell);
+
+      var month = document.createElement('div');
+      month.className = 'money';
+      month.appendChild(inputCell('price_month', product.slug, String(product.price_month), 'Monthly price'));
+      row.appendChild(month);
+
+      var setup = document.createElement('div');
+      setup.className = 'money';
+      setup.appendChild(inputCell('price_setup', product.slug, String(product.price_setup), 'Setup fee'));
+      row.appendChild(setup);
+
+      productHost.appendChild(row);
+    });
+
+    var stamp = baseContent.updated_at ? new Date(baseContent.updated_at) : null;
+    editorMeta.textContent = stamp && !isNaN(stamp)
+      ? 'Last saved ' + stamp.toLocaleString()
+      : 'Never edited';
+    setStatus(editorStatus, '', '');
+  }
+
+  function labelNode(id, text) {
+    var label = document.createElement('label');
+    label.setAttribute('for', id);
+    label.textContent = text;
+    label.style.fontSize = '11px';
+    label.style.color = 'var(--slate)';
+    return label;
+  }
+
+  function inputCell(kind, slug, value, label) {
+    var input = document.createElement('input');
+    input.type = kind.indexOf('price_') === 0 ? 'number' : 'text';
+    if (input.type === 'number') { input.min = '0'; input.step = '1'; input.max = String(MAX_PRICE); }
+    input.value = value == null ? '' : value;
+    input.setAttribute('data-kind', kind);
+    input.setAttribute('data-slug', slug);
+    input.setAttribute('aria-label', label);
+    input.addEventListener('input', function () { input.classList.remove('bad'); });
+    return input;
+  }
+
+  // ------------------------------------------------------------ save
+  function collect() {
+    var document_ = { version: 1, prices: {}, labels: {}, copy: {} };
+    var problems = [];
+
+    document.querySelectorAll('#copy-fields [data-copy-key]').forEach(function (input) {
+      var key = input.getAttribute('data-copy-key');
+      var value = input.value.trim();
+      if (!value) {
+        document_.copy[key] = defaults[key] || '';
+        return;
+      }
+      document_.copy[key] = value;
+    });
+
+    document.querySelectorAll('#product-fields .product-row').forEach(function (row) {
+      var slug = row.getAttribute('data-slug');
+      var name = row.querySelector('[data-kind="name"]');
+      var tagline = row.querySelector('[data-kind="tagline"]');
+      var category = row.querySelector('[data-kind="category"]');
+      var month = row.querySelector('[data-kind="price_month"]');
+      var setup = row.querySelector('[data-kind="price_setup"]');
+
+      var labels = {};
+      if (name.value.trim()) { labels.name = name.value.trim(); } else { problems.push('A product needs a name.'); name.classList.add('bad'); }
+      if (tagline.value.trim()) { labels.tagline = tagline.value.trim(); }
+      if (category.value.trim()) { labels.category = category.value.trim(); }
+
+      var prices = {};
+      [['price_month', month], ['price_setup', setup]].forEach(function (pair) {
+        var key = pair[0], input = pair[1];
+        var raw = input.value.trim();
+        var number = Number(raw.replace(/[,\s₱]/g, ''));
+        if (!raw || isNaN(number) || number < 0 || number > MAX_PRICE || Math.round(number) !== number) {
+          problems.push('Prices must be whole pesos between 0 and ' + MAX_PRICE.toLocaleString() + '.');
+          input.classList.add('bad');
+          return;
+        }
+        prices[key] = number;
+      });
+
+      document_.labels[slug] = labels;
+      document_.prices[slug] = prices;
+    });
+
+    return { document: document_, problems: problems };
+  }
+
+  function save() {
+    var collected = collect();
+    if (collected.problems.length) {
+      setStatus(editorStatus, collected.problems[0], 'error');
+      return;
+    }
+    collected.document.updated_at = new Date().toISOString();
+    var payload = JSON.stringify(collected.document, null, 2) + '\n';
+
+    var saveBtn = document.getElementById('admin-save');
+    saveBtn.disabled = true;
+    setStatus(editorStatus, 'Saving to GitHub…', '');
+
+    api('/contents/' + CONTENT_PATH + '?ref=' + BRANCH).then(function (file) {
+      sha = file && file.sha ? file.sha : sha;
+      return api('/contents/' + CONTENT_PATH, {
+        method: 'PUT',
+        body: JSON.stringify({
+          message: 'Update store prices and labels from the admin editor',
+          content: toBase64(payload),
+          branch: BRANCH,
+          sha: sha || undefined
+        })
+      });
+    }).then(function (result) {
+      sha = (result && result.content && result.content.sha) || sha;
+      baseContent = collected.document;
+      setStatus(
+        editorStatus,
+        'Saved. The store rebuilds in about a minute — reload to see it.',
+        'ok'
+      );
+      editorMeta.textContent = 'Saved ' + new Date().toLocaleString();
+    }).catch(function (error) {
+      var message = error.message || 'Save failed.';
+      if (error.status === 409) { message = 'Someone else saved first. Reload the page and try again.'; }
+      if (error.status === 401 || error.status === 403) { message = 'The token was rejected. Sign in again with Contents: Read and write.'; }
+      setStatus(editorStatus, message, 'error');
+    }).then(function () {
+      saveBtn.disabled = false;
+    });
+  }
+
+  document.getElementById('admin-save').addEventListener('click', save);
+
+  document.getElementById('admin-signout').addEventListener('click', function () {
+    token = '';
+    sha = null;
+    sessionStorage.removeItem(TOKEN_KEY);
+    markSignedOut();
+    editor.close();
+  });
+
+  document.getElementById('admin-reset').addEventListener('click', function () {
+    if (!window.confirm('Discard unsaved edits and reload the published values?')) { return; }
+    window.location.reload();
+  });
+
+  if (token) { markSignedIn(); }
 })();
 </script>
 </body>

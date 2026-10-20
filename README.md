@@ -101,6 +101,29 @@ python tools/build_store.py      # regenerate docs/index.html
 Override the contact and repository links with `STORE_GITHUB_URL`, `STORE_REPO_URL` and
 `STORE_EMAIL` when building for a different account.
 
+The catalog decides **which** systems exist; `docs/store-content.json` holds the
+prices, labels and page copy an administrator may change. `store_content.py` layers
+that file over the catalog and refuses bad values (negative or absurd prices,
+blank or over-long labels, unknown slugs), so a half-edited file always degrades
+to the catalog instead of publishing a broken page.
+
+```bash
+python tools/build_store.py --init-content   # seed docs/store-content.json from the catalog
+```
+
+### Admin editor
+
+The published store has an **Admin** button in the top right. Signing in there needs a
+GitHub **fine-grained token** scoped to this repository with **Contents: Read and
+write** (<https://github.com/settings/personal-access-tokens/new>); the classic
+`repo` scope works too. The token is kept in the browser tab's `sessionStorage`,
+never written to the repository, and the editor uses it to commit
+`docs/store-content.json` straight to `main`.
+
+Editing is a normal commit: the Pages workflow rebuilds the store about a minute
+after saving, the repo history is the audit trail, and a bad edit can be reverted
+with `git revert`. Sign out clears the token from the tab.
+
 ### Currency
 
 Prices are in **Philippine peso (PHP)**, with a USD equivalent shown alongside
