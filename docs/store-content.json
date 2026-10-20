@@ -46,7 +46,7 @@
       "price_setup": 10000
     },
     "cybersecurity-games": {
-      "price_month": 1590,
+      "price_month": 1290,
       "price_setup": 6000
     },
     "file-tracking-system": {
@@ -132,5 +132,5 @@
     "brand_tagline": "Business systems, ready to deploy",
     "footer_line": "{count} business systems. Prices in Philippine peso (PHP), VAT inclusive."
   },
-  "updated_at": "2026-10-20T05:23:32.311Z"
+  "updated_at": "2026-10-20T05:24:49.599Z"
 }
