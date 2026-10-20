@@ -44,6 +44,9 @@ jobs:
         run: python tools/build_store.py
 
       - uses: actions/configure-pages@v5
+        with:
+          # Creates the Pages site on the first run, so no manual setting is needed.
+          enablement: true
 
       - uses: actions/upload-pages-artifact@v3
         with:
