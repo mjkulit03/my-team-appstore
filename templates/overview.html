@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+{% block title %}Control Panel — My Team{% endblock %}
+
+{% block content %}
+<section class="wrap">
+  <div class="section-head">
+    <h1>Control Panel</h1>
+    <p>Everything the AI workforce needs a human to look at.</p>
+    <div class="inline-form">
+      <a class="btn btn-ghost btn-small" href="/dashboard">AI Command Center</a>
+      {% if me and me.role == 'admin' %}
+      <a class="btn btn-ghost btn-small" href="/control/settings/users">User accounts</a>
+      {% endif %}
+      <form method="get" action="/control/logout" class="inline-form">
+        <button class="btn btn-small" type="submit">Sign out</button>
+      </form>
+    </div>
+    {% if me %}<p class="muted small">Signed in as <strong>{{ me.username }}</strong> ({{ me.role }}) · prices in {{ currency }} ({{ currency_symbol }})</p>{% endif %}
+  </div>
+
+  <div class="stat-row">
+    <div class="stat"><span class="label">Products</span><strong>{{ products|length }}</strong></div>
+    <div class="stat"><span class="label">Pending approvals</span><strong>{{ pending|length }}</strong></div>
+    <div class="stat"><span class="label">Leads</span><strong>{{ leads|length }}</strong></div>
+    <div class="stat"><span class="label">Pipeline value</span><strong>{{ currency_symbol }}{{ "{:,.0f}".format(total_value) }}</strong></div>
+  </div>
+
+  <h2>Traffic analysis</h2>
+  <div class="stat-row">
+    <div class="stat"><span class="label">Page views</span><strong>{{ traffic.total_views }}</strong></div>
+    <div class="stat"><span class="label">Views (last {{ traffic.window_days }}d)</span><strong>{{ traffic.views_last_window }}</strong></div>
+    <div class="stat"><span class="label">Inquiries</span><strong>{{ traffic.total_inquiries }}</strong></div>
+    <div class="stat"><span class="label">View → inquiry</span><strong>{{ traffic.conversion_pct }}%</strong></div>
+  </div>
+
+  <div class="split">
+    <div class="card"><div class="card-body">
+      <h3>Interest by product</h3>
+      {% if traffic.views_by_product %}
+      <ul class="lead-list">
+        {% for slug, count in traffic.views_by_product.items() %}
+        <li>
+          <strong>{{ slug }}</strong>
+          <span class="amount">{{ count }} view{{ '' if count == 1 else 's' }}</span>
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p class="muted">No product pages viewed yet.</p>
+      {% endif %}
+    </div></div>
+
+    <div class="card"><div class="card-body">
+      <h3>Where the traffic comes from</h3>
+      {% if traffic.top_referrers %}
+      <ul class="lead-list">
+        {% for source, count in traffic.top_referrers.items() %}
+        <li><strong>{{ source }}</strong><span class="amount">{{ count }}</span></li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p class="muted">No referrer data yet.</p>
+      {% endif %}
+    </div></div>
+  </div>
+
+  {% if traffic.most_viewed_products %}
+  <p class="muted small">
+    Highest interest: {% for slug in traffic.most_viewed_products %}<code>{{ slug }}</code>{% if not loop.last %}, {% endif %}{% endfor %} — worth prioritising in the next campaign.
+  </p>
+  {% endif %}
+
+  <div class="split">
+    <div>
+      <h2>Needs a decision</h2>
+      {% if pending %}
+      <ul class="esc-list">
+        {% for e in pending %}
+        <li class="esc sev-{{ e.severity }}">
+          <div>
+            <span class="pill pill-{{ e.severity }}">{{ e.severity }}</span>
+            <strong>{{ e.title }}</strong>
+            <p class="muted small">{{ e.summary }}</p>
+            <p class="muted small">{{ e.kind }} · raised {{ e.created_at }}</p>
+          </div>
+          {% if e.details.decision_url %}
+          <a class="btn btn-small" href="{{ e.details.decision_url }}">Review</a>
+          {% endif %}
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p class="muted">Nothing waiting. The AI workforce is running unattended.</p>
+      {% endif %}
+
+      <h2>Resolved</h2>
+      {% set resolved = escalations|rejectattr("status", "equalto", "pending")|list %}
+      {% if resolved %}
+      <ul class="esc-list">
+        {% for e in resolved[:10] %}
+        <li class="esc resolved">
+          <div><strong>{{ e.title }}</strong>
+          <p class="muted small">{{ e.resolution }} — {{ e.resolution_note or 'no note' }}</p></div>
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p class="muted">No resolved escalations yet.</p>
+      {% endif %}
+    </div>
+
+    <div>
+      <h2>Notification channels</h2>
+      <div class="card"><div class="card-body">
+        <p><strong>Enabled:</strong> {{ 'yes' if status.enabled else 'no' }}</p>
+        <p><strong>Active channels:</strong> {{ status.channels|join(', ') if status.channels else 'none configured' }}</p>
+        <p><strong>SMTP:</strong> {{ status.email.host or 'not set' }}:{{ status.email.port if status.email.host else '' }}
+          {% if status.email.recipients %}→ {{ status.email.recipients|join(', ') }}{% endif %}</p>
+        <p><strong>Webhook:</strong> {{ status.webhook.provider }} {{ status.webhook.url }}</p>
+        <p><strong>Thresholds:</strong> lead ≥ {{ currency_symbol }}{{ "{:,.0f}".format(status.thresholds.lead_value) }},
+          anomaly ≥ {{ currency_symbol }}{{ "{:,.0f}".format(status.thresholds.accounting_anomaly) }}</p>
+        <p class="muted small">Credentials are read from environment variables and are never displayed.</p>
+      </div></div>
+
+      <h2>Worker</h2>
+      <div class="card"><div class="card-body">
+        <p><strong>Pending:</strong> {{ worker.pending }}</p>
+        <p class="muted small">Dry run — the worker would notify {{ worker.pending }} item(s) via
+          {{ worker.channels|join(', ') if worker.channels else 'no configured channel' }}.</p>
+        <p class="muted small">Run it now:
+          <code>python -m notifications.worker</code></p>
+      </div></div>
+
+      <h2>Recent quotations</h2>
+      {% if quotations %}
+      <ul class="lead-list">
+        {% for q in quotations %}
+        <li>
+          <strong>{{ q.quotation.reference if q.quotation else q.id }}</strong>
+          <span class="muted small">{{ q.product_name }} · {{ q.customer.name if q.customer else '' }}</span>
+          <span class="amount">{{ currency_symbol }}{{ "{:,.0f}".format(q.quotation.year_one_total if q.quotation else 0) }}</span>
+        </li>
+        {% endfor %}
+      </ul>
+      <p class="muted small">Pipeline: Marketing → Sales → Accounting, then e-mailed to the customer.</p>
+      {% else %}
+      <p class="muted">No quotations yet. Use the form on a product page.</p>
+      {% endif %}
+
+      <h2>Recent leads</h2>
+      {% if leads %}
+      <ul class="lead-list">
+        {% for l in leads[:12] %}
+        <li>
+          <strong>{{ l.contact_name }}</strong>
+          <span class="muted small">{{ l.organisation or l.email }} · {{ l.product_name }}</span>
+          <span class="amount">{{ currency_symbol }}{{ "{:,.0f}".format(l.estimated_value) }}</span>
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p class="muted">No leads yet. Submit the form on a product page.</p>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}

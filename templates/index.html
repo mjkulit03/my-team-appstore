@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}My Team — Operations Software Suite{% endblock %}
+{% block head_extra %}{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <div class="wrap">
+    <span class="eyebrow">{{ products|length }} systems · one suite</span>
+    <h1>Software that keeps track, so your team can keep working.</h1>
+    <p class="lede">
+      Asset, HR, project, retail, records and security systems that actually agree
+      with each other. Every product is backed by an AI workforce that drafts the
+      marketing, the outreach and the books — and hands anything sensitive to a human.
+    </p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="#catalog">Browse the suite</a>
+      <a class="btn btn-ghost" href="/dashboard">Open the AI Command Center</a>
+    </div>
+    <p class="hero-note">Whole suite from <strong>{{ symbol }}{{ "{:,.0f}".format(total_monthly) }}/month</strong> for all {{ products|length }} systems.
+      {% if usd_total %}&nbsp;·&nbsp;about {{ usd_total }}{% endif %}</p>
+  </div>
+</section>
+
+<section class="wrap" id="catalog">
+  <div class="section-head">
+    <h2>The catalog</h2>
+    <p>Each system stands alone, or run them together on one shared record of your stock, staff and requests.</p>
+  </div>
+
+  <div class="grid">
+    {% for p in products %}
+    <article class="card">
+      <div class="card-icon" aria-hidden="true">{{ p.icon }}</div>
+      <div class="card-body">
+        <span class="pill">{{ p.category }}</span>
+        <h3><a href="/products/{{ p.slug }}">{{ p.name }}</a></h3>
+        <p class="tagline">{{ p.tagline }}</p>
+        <ul class="mini-list">
+          {% for h in p.highlights[:2] %}<li>{{ h }}</li>{% endfor %}
+        </ul>
+        <div class="card-foot">
+          <div class="price"><strong>{{ symbol }}{{ "{:,.0f}".format(p.price_month) }}</strong>/mo<span> + {{ symbol }}{{ "{:,.0f}".format(p.price_setup) }} setup · ~{{ usd_month[p.slug] }}</span></div>
+          <div class="card-actions">
+            {% if p.demo_url %}<a class="btn btn-small" href="{{ p.demo_url }}" target="_blank" rel="noopener">Live demo</a>{% endif %}
+            <a class="btn btn-small" href="/products/{{ p.slug }}">View system</a>
+          </div>
+        </div>
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>How the AI workforce fits in</h2>
+      <p>The agents never publish, commit or pay on their own.</p>
+    </div>
+    <ol class="steps">
+      <li><strong>Marketing AI</strong><span>Drafts social copy for every product, using the catalog as its source of truth.</span></li>
+      <li><strong>Sales AI</strong><span>Writes tailored outreach the moment a lead comes in from a landing page.</span></li>
+      <li><strong>Accounting AI</strong><span>Reconciles income and expenses and flags anomalies against a threshold.</span></li>
+      <li><strong>You</strong><span>Approve anything regulated, high-value or unusual — by email or WhatsApp.</span></li>
+    </ol>
+  </div>
+</section>
+{% endblock %}

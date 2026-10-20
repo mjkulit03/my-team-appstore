@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block title %}User Accounts — My Team{% endblock %}
+
+{% block content %}
+<section class="wrap">
+  <div class="section-head">
+    <h1>User accounts</h1>
+    <p>Create accounts and assign roles. Only administrators can see this page.</p>
+    <div class="inline-form">
+      <a class="btn btn-ghost btn-small" href="/control/overview">← Overview</a>
+      <form method="get" action="/control/logout" class="inline-form">
+        <button class="btn btn-small" type="submit">Sign out</button>
+      </form>
+    </div>
+  </div>
+
+  {% if error %}<div class="flash flash-error"><p>{{ error }}</p></div>{% endif %}
+  {% if notice %}<div class="flash flash-ok"><p>{{ notice }}</p></div>{% endif %}
+
+  {% if is_admin %}
+  <div class="split">
+    <div>
+      <h2>Accounts</h2>
+      {% if accounts %}
+      <table class="table">
+        <thead>
+          <tr><th>Username</th><th>Name</th><th>Role</th><th>Status</th><th>Last sign-in</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+          {% for a in accounts %}
+          <tr class="{{ '' if a.active else 'inactive' }}">
+            <td><strong>{{ a.username }}</strong>{% if a.username == me.username %} <span class="pill">you</span>{% endif %}</td>
+            <td>{{ a.display_name }}</td>
+            <td>
+              <form method="post" action="/control/settings/users/{{ a.username }}/role" class="inline-form">
+                <select name="role" onchange="this.form.submit()">
+                  {% for r in roles %}
+                  <option value="{{ r.id }}" {% if r.id == a.role %}selected{% endif %}>{{ r.label }}</option>
+                  {% endfor %}
+                </select>
+              </form>
+            </td>
+            <td>
+              {% if a.active %}<span class="pill pill-medium">Active</span>
+              {% else %}<span class="pill">Disabled</span>{% endif %}
+            </td>
+            <td class="muted small">{{ a.last_login_at or 'never' }}</td>
+            <td>
+              <form method="post" action="/control/settings/users/{{ a.username }}/toggle" class="inline-form">
+                <button class="btn btn-small" type="submit">{% if a.active %}Disable{% else %}Enable{% endif %}</button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p class="muted">No accounts yet.</p>
+      {% endif %}
+    </div>
+
+    <div>
+      <h2>Create an account</h2>
+      <form method="post" action="/control/settings/users/create" class="card"><div class="card-body form">
+        <label>Username<input type="text" name="username" required minlength="3" maxlength="32"
+               pattern="[a-z0-9][a-z0-9._\-]{2,31}" placeholder="e.g. operator"
+               title="Lowercase letters, numbers, dot, dash or underscore"></label>
+        <label>Full name<input type="text" name="display_name" placeholder="Optional"></label>
+        <label>Password<input type="password" name="password" required minlength="{{ min_password }}"
+               autocomplete="new-password"></label>
+        <label>Role
+          <select name="role">
+            {% for r in roles %}<option value="{{ r.id }}">{{ r.label }}</option>{% endfor %}
+          </select>
+        </label>
+        <p class="muted small">Minimum {{ min_password }} characters. Passwords are hashed with PBKDF2-SHA256
+           and are never shown again.</p>
+        <button class="btn btn-primary btn-block" type="submit">Create account</button>
+      </div></form>
+
+      <h2>Reset a password</h2>
+      <form method="post" action="/control/settings/users/admin/password" class="card"><div class="card-body form">
+        <p class="muted small">Replaces the password for the account named below.</p>
+        <label>Username<input type="text" name="username" required></label>
+        <label>New password<input type="password" name="password" required minlength="{{ min_password }}"
+               autocomplete="new-password"></label>
+        <button class="btn btn-block" type="submit">Update password</button>
+      </div></form>
+    </div>
+  </div>
+
+  <h2>What each role can do</h2>
+  <ul class="mini-list">
+    {% for r in roles %}<li><strong>{{ r.label }}</strong> — {{ r.description }}</li>{% endfor %}
+  </ul>
+  {% else %}
+  <p class="muted">You are signed in as <strong>{{ me.username }}</strong> ({{ me.role }}), which cannot manage accounts.
+     Ask an administrator to change your role.</p>
+  {% endif %}
+</section>
+{% endblock %}

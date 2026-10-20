@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>App Store — 13 business systems by My Team</title>
+<meta name="description" content="13 ready-to-deploy business systems: asset and inventory management, HRIS, project management, offline POS, attendance, records tracking and security awareness training.">
+<style>
+  :root{
+    --paper:#F7F5EF;
+    --surface:#FFFFFF;
+    --surface-2:#EFEBE1;
+    --ink:#14181F;
+    --navy:#1B2A4A;
+    --navy-deep:#101B33;
+    --slate:#57606F;
+    --slate-light:#868FA0;
+    --line:#DDD8CC;
+    --line-strong:#C7C0AE;
+    --brass:#8E6E37;
+    --brass-deep:#6E5327;
+    --brass-tint:#F1E8D3;
+    --ok:#2F6B4F;
+    --radius:14px;
+    --shadow:0 1px 2px rgba(16,27,51,.05), 0 10px 30px rgba(16,27,51,.07);
+    --serif:Georgia, 'Times New Roman', serif;
+    --sans:-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    --mono:'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    --maxw:1160px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  .wrap{width:min(var(--maxw), calc(100% - 40px));margin:0 auto}
+  .muted{color:var(--slate)}
+  .small{font-size:13px}
+
+  /* header */
+  .site-header{position:sticky;top:0;z-index:20;background:rgba(247,245,239,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .header-inner{display:flex;align-items:center;gap:22px;padding:14px 0}
+  .logo{display:flex;align-items:center;gap:11px;text-decoration:none;margin-right:auto}
+  .logo-mark{width:36px;height:36px;border-radius:9px;background:var(--navy);color:#F7F5EF;display:grid;place-items:center;font-family:var(--serif);font-weight:700;letter-spacing:.02em;font-size:15px}
+  .logo strong{display:block;font-family:var(--serif);font-size:16px;letter-spacing:-.01em;line-height:1.15}
+  .logo small{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--slate);font-weight:600}
+  .site-nav{display:flex;align-items:center;gap:18px;font-size:13.5px;font-weight:600}
+  .site-nav a{text-decoration:none;color:var(--slate)}
+  .site-nav a:hover{color:var(--ink)}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);border-radius:8px;padding:10px 16px;font-size:13.5px;font-weight:650;text-decoration:none;cursor:pointer;transition:transform .12s ease, border-color .12s ease, background .12s ease}
+  .btn:hover{border-color:var(--navy);transform:translateY(-1px)}
+  .btn-primary{background:var(--navy);border-color:var(--navy);color:#fff}
+  .btn-primary:hover{background:var(--navy-deep);border-color:var(--navy-deep)}
+  .btn-small{padding:7px 12px;font-size:12.5px}
+  .btn-ghost{background:transparent;border-color:rgba(255,255,255,.28);color:#F7F5EF}
+  .btn-ghost:hover{border-color:#F7F5EF;background:rgba(255,255,255,.06)}
+
+  /* hero */
+  .hero{background:var(--navy-deep);color:#F7F5EF;position:relative;overflow:hidden}
+  .hero::before{content:"";position:absolute;inset:0;background:
+    radial-gradient(900px 420px at 12% -10%, rgba(142,110,55,.42), transparent 60%),
+    radial-gradient(700px 380px at 92% 0%, rgba(87,96,111,.35), transparent 65%);
+    pointer-events:none}
+  .hero .wrap{position:relative;padding:66px 0 58px}
+  .eyebrow{display:inline-flex;align-items:center;gap:9px;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:#D8C39A;border:1px solid rgba(216,195,154,.32);border-radius:999px;padding:6px 13px}
+  .hero h1{font-family:var(--serif);font-size:clamp(34px, 5vw, 56px);line-height:1.06;letter-spacing:-.025em;margin:22px 0 16px;max-width:18ch;font-weight:600}
+  .hero p.lede{font-size:17.5px;line-height:1.6;color:#C8CEDA;max-width:62ch;margin:0 0 26px}
+  .hero-actions{display:flex;flex-wrap:wrap;gap:11px;margin-bottom:30px}
+  .hero-stats{display:flex;flex-wrap:wrap;gap:34px;padding-top:24px;border-top:1px solid rgba(255,255,255,.14)}
+  .hero-stat strong{display:block;font-family:var(--serif);font-size:25px;line-height:1.2;letter-spacing:-.01em}
+  .hero-stat span{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#A9B2C2;font-weight:600}
+
+  /* toolbar */
+  .catalog{padding:46px 0 20px}
+  .section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:22px}
+  .section-head h2{font-family:var(--serif);font-size:clamp(25px,3vw,34px);letter-spacing:-.02em;margin:0 0 6px;font-weight:600}
+  .section-head p{margin:0;color:var(--slate);font-size:14.5px;max-width:62ch}
+  .toolbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+  .search{position:relative;flex:1 1 280px;max-width:420px}
+  .search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);opacity:.5}
+  .search input{width:100%;padding:11px 13px 11px 38px;border:1px solid var(--line-strong);border-radius:9px;background:var(--surface);font-size:14px;font-family:inherit;color:var(--ink)}
+  .search input:focus{outline:2px solid var(--brass);outline-offset:1px;border-color:var(--brass)}
+  .chips{display:flex;flex-wrap:wrap;gap:7px}
+  .chip{border:1px solid var(--line-strong);background:transparent;color:var(--slate);border-radius:999px;padding:6px 12px;font-size:12.5px;font-weight:600;font-family:inherit;cursor:pointer}
+  .chip:hover{border-color:var(--navy);color:var(--ink)}
+  .chip.is-active{background:var(--navy);border-color:var(--navy);color:#fff}
+  .result-count{font-size:12.5px;color:var(--slate);margin-left:auto;white-space:nowrap}
+
+  /* cards */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:18px}
+  .app-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:21px;display:flex;flex-direction:column;box-shadow:var(--shadow);transition:transform .15s ease, border-color .15s ease}
+  .app-card:hover{transform:translateY(-3px);border-color:var(--line-strong)}
+  .app-card[hidden]{display:none}
+  .card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}
+  .app-icon{width:44px;height:44px;border-radius:11px;background:var(--surface-2);display:grid;place-items:center;font-size:22px;line-height:1}
+  .pill{display:inline-block;background:var(--brass-tint);color:var(--brass-deep);border-radius:999px;padding:3px 9px;font-size:10.5px;font-weight:750;letter-spacing:.05em;text-transform:uppercase;white-space:nowrap}
+  .app-card h3{font-family:var(--serif);font-size:19px;line-height:1.25;letter-spacing:-.01em;margin:0 0 7px;font-weight:600}
+  .app-card .tagline{color:var(--slate);font-size:13.5px;margin:0 0 13px}
+  .app-card ul{list-style:none;margin:0 0 16px;padding:0;display:flex;flex-direction:column;gap:6px;flex:1}
+  .app-card li{position:relative;padding-left:16px;font-size:12.8px;color:#3B434F}
+  .app-card li::before{content:"";position:absolute;left:2px;top:.55em;width:5px;height:5px;border-radius:50%;background:var(--brass)}
+  .price-row{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;padding-top:13px;border-top:1px solid var(--line);margin-bottom:13px}
+  .price strong{font-family:var(--serif);font-size:21px;letter-spacing:-.01em}
+  .price span{display:block;font-size:11.5px;color:var(--slate)}
+  .price .usd{font-size:11.5px;color:var(--slate-light);text-align:right;white-space:nowrap}
+  .card-actions{display:flex;gap:8px;flex-wrap:wrap}
+  .card-actions .btn{flex:1 1 auto}
+  .empty{display:none;text-align:center;padding:54px 20px;color:var(--slate);border:1px dashed var(--line-strong);border-radius:var(--radius);background:var(--surface)}
+  .empty strong{display:block;font-family:var(--serif);font-size:20px;color:var(--ink);margin-bottom:4px}
+
+  /* bundle */
+  .band{margin:52px 0 0;background:var(--navy);color:#F7F5EF;border-radius:20px;overflow:hidden;position:relative}
+  .band::after{content:"";position:absolute;right:-120px;top:-120px;width:360px;height:360px;border-radius:50%;background:radial-gradient(circle, rgba(142,110,55,.5), transparent 70%)}
+  .band-inner{position:relative;display:grid;grid-template-columns:1.5fr 1fr;gap:30px;padding:38px 38px}
+  .band h2{font-family:var(--serif);font-size:clamp(24px,3vw,32px);letter-spacing:-.02em;margin:0 0 10px;font-weight:600}
+  .band p{margin:0 0 18px;color:#C8CEDA;font-size:14.5px;max-width:56ch}
+  .bundle-price{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);border-radius:14px;padding:20px 22px;align-self:center}
+  .bundle-price .label{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#D8C39A;font-weight:700}
+  .bundle-price strong{display:block;font-family:var(--serif);font-size:34px;line-height:1.2;letter-spacing:-.02em;margin:4px 0 2px}
+  .bundle-price span{font-size:12.5px;color:#C8CEDA}
+  .bundle-price .btn{margin-top:14px;width:100%;background:#F7F5EF;border-color:#F7F5EF;color:var(--navy-deep)}
+  .bundle-price .btn:hover{background:#fff}
+
+  /* steps + faq */
+  .blocks{display:grid;grid-template-columns:1fr 1fr;gap:26px;margin:56px 0 0}
+  .block h2{font-family:var(--serif);font-size:clamp(22px,2.4vw,27px);letter-spacing:-.02em;margin:0 0 16px;font-weight:600}
+  .steps{list-style:none;margin:0;padding:0;counter-reset:step}
+  .steps li{position:relative;padding:0 0 18px 46px;counter-increment:step}
+  .steps li:last-child{padding-bottom:0}
+  .steps li::before{content:counter(step);position:absolute;left:0;top:0;width:30px;height:30px;border-radius:50%;background:var(--surface);border:1px solid var(--line-strong);display:grid;place-items:center;font-family:var(--serif);font-size:14px;font-weight:700;color:var(--brass-deep)}
+  .steps li::after{content:"";position:absolute;left:14.5px;top:33px;bottom:4px;width:1px;background:var(--line)}
+  .steps li:last-child::after{display:none}
+  .steps strong{display:block;font-size:14px;margin-bottom:2px}
+  .steps span{font-size:13px;color:var(--slate)}
+
+  .faq details{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:13px 16px;margin-bottom:9px}
+  .faq details[open]{border-color:var(--line-strong)}
+  .faq summary{cursor:pointer;font-weight:650;font-size:13.8px;list-style:none;display:flex;justify-content:space-between;gap:10px;align-items:center}
+  .faq summary::-webkit-details-marker{display:none}
+  .faq summary::after{content:"+";font-family:var(--serif);font-size:18px;color:var(--brass);line-height:1}
+  .faq details[open] summary::after{content:"–"}
+  .faq p{margin:9px 0 0;font-size:13px;color:var(--slate)}
+
+  /* footer */
+  .site-footer{margin-top:64px;border-top:1px solid var(--line);background:var(--surface);padding:30px 0}
+  .footer-inner{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;align-items:center}
+  .footer-inner p{margin:0;font-size:12.8px;color:var(--slate)}
+  .footer-links{display:flex;gap:16px;font-size:12.8px;font-weight:600}
+  .footer-links a{text-decoration:none;color:var(--navy)}
+
+  @media (max-width:820px){
+    .band-inner{grid-template-columns:1fr;padding:30px 24px}
+    .blocks{grid-template-columns:1fr}
+    .site-nav{display:none}
+    .hero .wrap{padding:48px 0 42px}
+    .result-count{display:none}
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="logo" href="#top">
+      <span class="logo-mark" aria-hidden="true">MT</span>
+      <span>
+        <strong>My Team App Store</strong>
+        <small>Business systems, ready to deploy</small>
+      </span>
+    </a>
+    <nav class="site-nav" aria-label="Sections">
+      <a href="#catalog">All apps</a>
+      <a href="#bundle">Bundle</a>
+      <a href="#how">How it works</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <a class="btn btn-small" href="https://github.com/mjkulit03" target="_blank" rel="noopener">GitHub ↗</a>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="wrap">
+      <span class="eyebrow">13 systems · one store</span>
+      <h1>Software your business can run on day one.</h1>
+      <p class="lede">
+        Inventory, assets, HR, projects, retail, attendance, records and security
+        awareness — built for Philippine organisations, delivered on-premise or offline,
+        and priced in pesos with no per-user surprises.
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#catalog">Browse all 13 systems</a>
+        <a class="btn btn-ghost" href="#bundle">See the whole-suite price</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat"><strong>13</strong><span>Ready systems</span></div>
+        <div class="hero-stat"><strong>₱0</strong><span>Per-user fees</span></div>
+        <div class="hero-stat"><strong>Offline</strong><span>Capable by design</span></div>
+        <div class="hero-stat"><strong>50/50</strong><span>Payment on delivery</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap catalog" id="catalog">
+    <div class="section-head">
+      <div>
+        <h2>The catalog</h2>
+        <p>Every system is sold on its own, or run several on one shared record of your stock, staff and documents.</p>
+      </div>
+      <p class="small muted">Prices in Philippine peso · billed monthly · USD shown for reference</p>
+    </div>
+
+    <div class="toolbar">
+      <div class="search">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.6-3.6"></path></svg>
+        <input id="search" type="search" placeholder="Search systems, categories, features…" aria-label="Search systems">
+      </div>
+      <div class="chips" id="chips">
+        <button class="chip is-active" type="button" data-category="">All</button>
+        <button class="chip" type="button" data-category="Education &amp; Attendance">Education &amp; Attendance</button>
+        <button class="chip" type="button" data-category="HR &amp; Payroll">HR &amp; Payroll</button>
+        <button class="chip" type="button" data-category="Healthcare Inventory">Healthcare Inventory</button>
+        <button class="chip" type="button" data-category="IT Asset Management">IT Asset Management</button>
+        <button class="chip" type="button" data-category="Inventory &amp; Procurement">Inventory &amp; Procurement</button>
+        <button class="chip" type="button" data-category="Project &amp; Work Management">Project &amp; Work Management</button>
+        <button class="chip" type="button" data-category="Records &amp; Document Management">Records &amp; Document Management</button>
+        <button class="chip" type="button" data-category="Retail &amp; Sales">Retail &amp; Sales</button>
+        <button class="chip" type="button" data-category="Security Awareness">Security Awareness</button>
+        <button class="chip" type="button" data-category="Service Management">Service Management</button>
+        <button class="chip" type="button" data-category="Time &amp; Attendance">Time &amp; Attendance</button>
+      </div>
+      <span class="result-count" id="result-count">13 systems</span>
+    </div>
+
+    <div class="grid" id="grid">
+      <article class="app-card"
+               data-category="IT Asset Management"
+               data-search="hardware management system it asset management know exactly what hardware you own, where it is, and who has it. a hardware management system that tracks every laptop, server, monitor and peripheral your company owns across its whole lifecycle. barcode scanning records assets coming in and going out, each item is assigned to a team member, and the system tracks warranty expiry, depreciation and end-of-life dates so nothing fails unexpectedly and no asset is lost or stolen. barcode and qr scanning for check-in / check-out assignment history per asset and per employee warranty and depreciation tracking low-stock and end-of-life alerts audit-ready export for auditors bulk import from spreadsheets or existing systems">
+        <div class="card-top">
+          <div class="app-icon" aria-hidden="true">🖥️</div>
+          <span class="pill">IT Asset Management</span>
+        </div>
+        <h3>Hardware Management System</h3>
+        <p class="tagline">Know exactly what hardware you own, where it is, and who has it.</p>
+        <ul>
+<li>Barcode and QR scanning for check-in / check-out</li><li>Assignment history per asset and per employee</li><li>Warranty and depreciation tracking</li>        </ul>
+        <div class="price-row">
+          <div class="price">
+            <strong>₱1,490</strong>
+            <span>/month · +₱9,000 setup</span>
+          </div>
+          <div class="usd">≈ $24.59<br>/mo</div>
+        </div>
+        <div class="card-actions">
+          <a class="btn btn-primary btn-small" href="mailto:jeff.manahan72@gmail.com?subject=Quotation%20request%3A%20Hardware%20Management%20System&body=Hi%2C%20I%20would%20like%20a%20quotation%20for%20Hardware%20Management%20System.%20Team%20size%3A%20___%2C%20target%20go-live%3A%20___.">Get a quote</a>
+        </div>
+      </article>
+      <article class="app-card"
+               data-category="Healthcare Inventory"
+               data-search="clinic inventory system healthcare inventory track stock, expiry and controlled drugs across every clinic room. a clinic inventory system built for medical supply rooms. it tracks consumables, controlled drugs and equipment by clinic location, enforces batch and expiry tracking, flags recalls, and produces the dispensing and stock reports that healthcare regulators ask for during an inspection. multi-site stock with per-room bin locations batch number and expiry tracking with recall alerts controlled-drug register with dual sign-off reorder points and supplier lead-time tracking inspection-ready dispensing reports role-based access for clinical and admin staff">
+        <div class="card-top">
+          <div class="app-icon" aria-hidden="true">🩺</div>
+          <span class="pill">Healthcare Inventory</span>
+        </div>
+        <h3>Clinic Inventory System</h3>
+        <p class="tagline">Track stock, expiry and controlled drugs across every clinic room.</p>
+        <ul>
+<li>Multi-site stock with per-room bin locations</li><li>Batch number and expiry tracking with recall alerts</li><li>Controlled-drug register with dual sign-off</li>        </ul>
+        <div class="price-row">
+          <div class="price">
+            <strong>₱2,490</strong>
+            <span>/month · +₱16,000 setup</span>
+          </div>
+          <div class="usd">≈ $41.09<br>/mo</div>
+        </div>
+        <div class="card-actions">
+          <a class="btn btn-primary btn-small" href="mailto:jeff.manahan72@gmail.com?subject=Quotation%20request%3A%20Clinic%20Inventory%20System&body=Hi%2C%20I%20would%20like%20a%20quotation%20for%20Clinic%20Inventory%20System.%20Team%20size%3A%20___%2C%20target%20go-live%3A%20___.">Get a quote</a>
+          <a class="btn btn-small" href="https://github.com/mjkulit03/Clinic_Inventory" target="_blank" rel="noopener">View source ↗</a>
+        </div>
+      </article>
+      <article class="app-card"
+               data-category="Inventory &amp; Procurement"
+               data-search="office supplies inventory system inventory &amp; procurement stop re-buying printer paper you already have in the cupboard. an office supplies inventory system for consumables: paper, toner, pens, cleaning and kitchen stock. staff request supplies from a shared catalogue, approvers see the cost before ordering, and the system tracks supplier contracts so you always reorder at the best price. self-service supply request and approval workflow consumable stock levels per office and per shelf supplier contract and price-list management consumption reports by cost centre automatic reorder suggestions at threshold kitting for onboarding new starters">
+        <div class="card-top">
+          <div class="app-icon" aria-hidden="true">📦</div>
+          <span class="pill">Inventory &amp; Procurement</span>
+        </div>
+        <h3>Office Supplies Inventory System</h3>
+        <p class="tagline">Stop re-buying printer paper you already have in the cupboard.</p>
+        <ul>
+<li>Self-service supply request and approval workflow</li><li>Consumable stock levels per office and per shelf</li><li>Supplier contract and price-list management</li>        </ul>
+        <div class="price-row">
+          <div class="price">
+            <strong>₱1,190</strong>
+            <span>/month · +₱6,000 setup</span>
+          </div>
+          <div class="usd">≈ $19.64<br>/mo</div>
+        </div>
+        <div class="card-actions">
+          <a class="btn btn-primary btn-small" href="mailto:jeff.manahan72@gmail.com?subject=Quotation%20request%3A%20Office%20Supplies%20Inventory%20System&body=Hi%2C%20I%20would%20like%20a%20quotation%20for%20Office%20Supplies%20Inventory%20System.%20Team%20size%3A%20___%2C%20target%20go-live%3A%20___.">Get a quote</a>
+          <a class="btn btn-small" href="https://github.com/mjkulit03/Office_supplies_Inventory" target="_blank" rel="noopener">View source ↗</a>
+        </div>
+      </article>
+      <article class="app-card"
+               data-category="IT Asset Management"
+               data-search="it asset management system it asset management one source of truth for software licences, contracts and devices. an it asset management system covering both hardware and software. it tracks device lifecycle, software licence allocation and renewal dates, vendor contracts, and cost-per-user, so it can answer what you own, what it costs and what renews next quarter without opening six spreadsheets. hardware and software licence in one register renewal calendar with 60/30/7-day reminders cost-per-user and total-cost-of-ownership reporting vendor and contract records with renewal terms access review and offboarding checklist api and csv import for existing inventories">
+        <div class="card-top">
+          <div class="app-icon" aria-hidden="true">🗂️</div>
+          <span class="pill">IT Asset Management</span>
+        </div>
+        <h3>IT Asset Management System</h3>
+        <p class="tagline">One source of truth for software licences, contracts and devices.</p>
+        <ul>
+<li>Hardware and software licence in one register</li><li>Renewal calendar with 60/30/7-day reminders</li><li>Cost-per-user and total-cost-of-ownership reporting</li>        </ul>
+        <div class="price-row">
+          <div class="price">
+            <strong>₱2,890</strong>
+            <span>/month · +₱18,000 setup</span>
+          </div>
+          <div class="usd">≈ $47.69<br>/mo</div>
+        </div>
+        <div class="card-actions">
+          <a class="btn btn-primary btn-small" href="mailto:jeff.manahan72@gmail.com?subject=Quotation%20request%3A%20IT%20Asset%20Management%20System&body=Hi%2C%20I%20would%20like%20a%20quotation%20for%20IT%20Asset%20Management%20System.%20Team%20size%3A%20___%2C%20target%20go-live%3A%20___.">Get a quote</a>
+        </div>
+      </article>
+      <article class="app-card"
+               data-category="Service Management"
+               data-search="service management request system service management every request logged, owned, prioritised and closed on time. a service management request system for internal it and facilities support. staff raise requests against a service catalogue, the system applies priority and sla rules automatically, assigns work to the right engineer, and keeps the requester updated until the request is closed. service catalogue with request forms per service automatic priority, routing and sla clocks engineer workload and queue views requester updates without chasing anyone knowledge-base articles attached to requests monthly sla attainment and backlog reporting">
+        <div class="card-top">
+          <div class="app-icon" aria-hidden="true">🎫</div>
+          <span class="pill">Service Management</span>
+        </div>
+        <h3>Service Management Request System</h3>
+        <p class="tagline">Every request logged, owned, prioritised and closed on time.</p>
+        <ul>
+<li>Service catalogue with request forms per service</li><li>Automatic priority, routing and SLA clocks</li><li>Engineer workload and queue views</li>        </ul>
+        <div class="price-row">
+          <div class="price">
+            <strong>₱1,990</strong>
+            <span>/month · +₱12,000 setup</span>
+          </div>
+          <div class="usd">≈ $32.84<br>/mo</div>
+        </div>
+        <div class="card-actions">
+          <a class="btn btn-primary btn-small" href="mailto:jeff.manahan72@gmail.com?subject=Quotation%20request%3A%20Service%20Management%20Request%20System&body=Hi%2C%20I%20would%20like%20a%20quotation%20for%20Service%20Management%20Request%20System.%20Team%20size%3A%20___%2C%20target%20go-live%3A%20___.">Get a quote</a>
+        </div>
+      </article>
+      <article class="app-card"
+               data-category="Time &amp; Attendance"
+               data-search="offsite log-in management system (time keeping) time &amp; attendance accurate attendance for staff working offsite, with no spreadsheets. an offsite log-in management system for time keeping that lets remote and field staff clock in from a phone or browser. it records location, device and shift start and end, handles leave and overtime approvals, and exports payroll-ready timesheets for staff who never touch an office network. clock-in and clock-out from mobile or browser location and device capture with privacy thresholds shift rosters, breaks and overtime rules leave requests and manager approval payroll-ready timesheet export anomaly flags for missed or duplicate punches">
+        <div class="card-top">
+          <div class="app-icon" aria-hidden="true">⏱️</div>
+          <span class="pill">Time &amp; Attendance</span>
+        </div>
+        <h3>Offsite Log-In Management System (Time Keeping)</h3>
+        <p class="tagline">Accurate attendance for staff working offsite, with no spreadsheets.</p>
+        <ul>
+<li>Clock-in and clock-out from mobile or browser</li><li>Location and device capture with privacy thresholds</li><li>Shift rosters, breaks and overtime rules</li>        </ul>
+        <div class="price-row">
+          <div class="price">
+            <strong>₱1,490</strong>
+            <span>/month · +₱8,000 setup</span>
+          </div>
+          <div class="usd">≈ $24.59<br>/mo</div>
+        </div>
+        <div class="card-actions">
+          <a class="btn btn-primary btn-small" href="mailto:jeff.manahan72@gmail.com?subject=Quotation%20request%3A%20Offsite%20Log-In%20Management%20System%20%28Time%20Keeping%29&body=Hi%2C%20I%20would%20like%20a%20quotation%20for%20Offsite%20Log-In%20Management%20System%20%28Time%20Keeping%29.%20Team%20size%3A%20___%2C%20target%20go-live%3A%20___.">Get a quote</a>
+          <a class="btn btn-small" href="https://mjkulit03.github.io/offsite-employee-login/" target="_blank" rel="noopener">Live demo ↗</a>
+        </div>
+      </article>
+      <article class="app-card"
+               data-category="Retail &amp; Sales"
+               data-search="grocery sales and inventory management system retail &amp; sales retail stock and sales that reconcile at close, every close. a grocery sales and inventory management system for retail stores. point-of-sale integrates with stock levels so shelf counts stay accurate, expiry and discount rules reduce waste, supplier purchase orders are driven by real demand, and daily reconciliation shows margin by product and by promotion. point-of-sale linked to live stock levels expiry, markdown and clearance rules purchase orders driven by demand and lead time margin reporting by product and promotion multi-store stock transfers daily reconciliation with variance alerts">
+        <div class="card-top">
+          <div class="app-icon" aria-hidden="true">🛒</div>
+          <span class="pill">Retail &amp; Sales</span>
+        </div>
+        <h3>Grocery Sales and Inventory Management System</h3>
+        <p class="tagline">Retail stock and sales that reconcile at close, every close.</p>
+        <ul>
+<li>Point-of-sale linked to live stock levels</li><li>Expiry, markdown and clearance rules</li><li>Purchase orders driven by demand and lead time</li>        </ul>
+        <div class="price-row">
+          <div class="price">
+            <strong>₱1,790</strong>
+            <span>/month · +₱12,000 setup</span>
+          </div>
+          <div class="usd">≈ $29.54<br>/mo</div>
+        </div>
+        <div class="card-actions">
+          <a class="btn btn-primary btn-small" href="mailto:jeff.manahan72@gmail.com?subject=Quotation%20request%3A%20Grocery%20Sales%20and%20Inventory%20Management%20System&body=Hi%2C%20I%20would%20like%20a%20quotation%20for%20Grocery%20Sales%20and%20Inventory%20Management%20System.%20Team%20size%3A%20___%2C%20target%20go-live%3A%20___.">Get a quote</a>
+        </div>
+      </article>
+      <article class="app-card"
+               data-category="Education &amp; Attendance"
+               data-search="student record with facial recognition system education &amp; attendance attendance and student records in one secure, auditable place. a student record system with facial recognition attendance. enrolment, guardian details, academic history and attendance live in one record; a camera at the door matches faces to enrolments to mark attendance automatically, with consent capture, retention controls and an auditable access log. student record with guardian and academic history face enrolment with explicit consent capture automatic attendance marking at the door manual attendance override with a reason retention and deletion controls for biometric data full access audit log">
+        <div class="card-top">
+          <div class="app-icon" aria-hidden="true">🎓</div>
+          <span class="pill">Education &amp; Attendance</span>
+        </div>
+        <h3>Student Record with Facial Recognition System</h3>
+        <p class="tagline">Attendance and student records in one secure, auditable place.</p>
+        <ul>
+<li>Student record with guardian and academic history</li><li>Face enrolment with explicit consent capture</li><li>Automatic attendance marking at the door</li>        </ul>
+        <div class="price-row">
+          <div class="price">
+            <strong>₱3,290</strong>
+            <span>/month · +₱24,000 setup</span>
+          </div>
+          <div class="usd">≈ $54.29<br>/mo</div>
+        </div>
+        <div class="card-actions">
+          <a class="btn btn-primary btn-small" href="mailto:jeff.manahan72@gmail.com?subject=Quotation%20request%3A%20Student%20Record%20with%20Facial%20Recognition%20System&body=Hi%2C%20I%20would%20like%20a%20quotation%20for%20Student%20Record%20with%20Facial%20Recognition%20System.%20Team%20size%3A%20___%2C%20target%20go-live%3A%20___.">Get a quote</a>
+        </div>
+      </article>
+      <article class="app-card"
+               data-category="HR &amp; Payroll"
+               data-search="hris — human resource information system hr &amp; payroll one employee record from hire to exit, with payroll-ready data. a human resource information system and hr platform that holds one employee record from hire to exit: personal details, contracts, positions, leave balances and payroll inputs. it tracks onboarding and offboarding checklists, document and licence expiries, and statutory contributions for sss, philhealth and pag-ibig, so payroll and compliance never depend on one person&#39;s spreadsheet. single employee master record from hire to exit org chart, positions and reporting lines leave credits, filings and approval routing payroll inputs with sss, philhealth and pag-ibig rules onboarding and offboarding checklists with owners document, licence and contract expiry alerts employee self-service for requests and payslips role-based access with a full audit trail">
+        <div class="card-top">
+          <div class="app-icon" aria-hidden="true">🧑‍💼</div>
+          <span class="pill">HR &amp; Payroll</span>
+        </div>
+        <h3>HRIS — Human Resource Information System</h3>
+        <p class="tagline">One employee record from hire to exit, with payroll-ready data.</p>
+        <ul>
+<li>Single employee master record from hire to exit</li><li>Org chart, positions and reporting lines</li><li>Leave credits, filings and approval routing</li>        </ul>
+        <div class="price-row">
+          <div class="price">
+            <strong>₱2,690</strong>
+            <span>/month · +₱18,000 setup</span>
+          </div>
+          <div class="usd">≈ $44.39<br>/mo</div>
+        </div>
+        <div class="card-actions">
+          <a class="btn btn-primary btn-small" href="mailto:jeff.manahan72@gmail.com?subject=Quotation%20request%3A%20HRIS%20%E2%80%94%20Human%20Resource%20Information%20System&body=Hi%2C%20I%20would%20like%20a%20quotation%20for%20HRIS%20%E2%80%94%20Human%20Resource%20Information%20System.%20Team%20size%3A%20___%2C%20target%20go-live%3A%20___.">Get a quote</a>
+        </div>
+      </article>
+      <article class="app-card"
+               data-category="Project &amp; Work Management"
+               data-search="project management system project &amp; work management scope, schedule and budget on one board your client can trust. a project management platform that keeps scope, schedule and budget on one board. teams plan work as tasks with dependencies, move between kanban and gantt views, log time against deliverables, and see budget versus actual cost before the overrun. clients get a read-only portal, and every status update is captured for the weekly report. projects, tasks, subtasks and dependencies kanban and gantt views over the same work time logging and timesheet approvals budget versus actual cost per project client portal with read-only progress file attachments and comment history milestone and deadline notifications workload view by person and by team">
+        <div class="card-top">
+          <div class="app-icon" aria-hidden="true">📋</div>
+          <span class="pill">Project &amp; Work Management</span>
+        </div>
+        <h3>Project Management System</h3>
+        <p class="tagline">Scope, schedule and budget on one board your client can trust.</p>
+        <ul>
+<li>Projects, tasks, subtasks and dependencies</li><li>Kanban and Gantt views over the same work</li><li>Time logging and timesheet approvals</li>        </ul>
+        <div class="price-row">
+          <div class="price">
+            <strong>₱1,990</strong>
+            <span>/month · +₱12,000 setup</span>
+          </div>
+          <div class="usd">≈ $32.84<br>/mo</div>
+        </div>
+        <div class="card-actions">
+          <a class="btn btn-primary btn-small" href="mailto:jeff.manahan72@gmail.com?subject=Quotation%20request%3A%20Project%20Management%20System&body=Hi%2C%20I%20would%20like%20a%20quotation%20for%20Project%20Management%20System.%20Team%20size%3A%20___%2C%20target%20go-live%3A%20___.">Get a quote</a>
+        </div>
+      </article>
+      <article class="app-card"
+               data-category="Retail &amp; Sales"
+               data-search="offline pos system retail &amp; sales keep selling when the internet drops, reconcile when it returns. a point-of-sale system that keeps selling when the internet drops. each terminal records sales locally, prints receipts and deducts stock from the local catalogue, then syncs every transaction to the server when a connection returns. it handles barcode scanning, returns, voids with manager approval, cash drawer counts and a z-read at close, so a retail store can run a full day without a live connection. full offline selling with local persistence automatic sync and conflict resolution on reconnect barcode scanning and receipt printing returns, voids and manager approval cash drawer count and end-of-day z-read live stock deduction per terminal multi-terminal sync over the store lan sales, margin and item reports by shift">
+        <div class="card-top">
+          <div class="app-icon" aria-hidden="true">🧾</div>
+          <span class="pill">Retail &amp; Sales</span>
+        </div>
+        <h3>Offline POS System</h3>
+        <p class="tagline">Keep selling when the internet drops, reconcile when it returns.</p>
+        <ul>
+<li>Full offline selling with local persistence</li><li>Automatic sync and conflict resolution on reconnect</li><li>Barcode scanning and receipt printing</li>        </ul>
+        <div class="price-row">
+          <div class="price">
+            <strong>₱1,590</strong>
+            <span>/month · +₱10,000 setup</span>
+          </div>
+          <div class="usd">≈ $26.24<br>/mo</div>
+        </div>
+        <div class="card-actions">
+          <a class="btn btn-primary btn-small" href="mailto:jeff.manahan72@gmail.com?subject=Quotation%20request%3A%20Offline%20POS%20System&body=Hi%2C%20I%20would%20like%20a%20quotation%20for%20Offline%20POS%20System.%20Team%20size%3A%20___%2C%20target%20go-live%3A%20___.">Get a quote</a>
+        </div>
+      </article>
+      <article class="app-card"
+               data-category="Security Awareness"
+               data-search="cybersecurity games security awareness security awareness staff actually finish, with proof they did. a security awareness training platform delivered as cyber security games. short missions cover phishing, password hygiene, social engineering, data handling and incident reporting; staff earn points on a team leaderboard while the platform records who completed which module. administrators run simulated phishing campaigns and see risk by team, with no classroom time required. scenario games for phishing, passwords and social engineering simulated phishing campaigns with safe landing pages team leaderboards and completion tracking role-based training paths for staff and managers risk scoring by team and by department offline mode for air-gapped networks certificates and completion evidence for audits content updates without re-deployment">
+        <div class="card-top">
+          <div class="app-icon" aria-hidden="true">🛡️</div>
+          <span class="pill">Security Awareness</span>
+        </div>
+        <h3>Cybersecurity Games</h3>
+        <p class="tagline">Security awareness staff actually finish, with proof they did.</p>
+        <ul>
+<li>Scenario games for phishing, passwords and social engineering</li><li>Simulated phishing campaigns with safe landing pages</li><li>Team leaderboards and completion tracking</li>        </ul>
+        <div class="price-row">
+          <div class="price">
+            <strong>₱1,290</strong>
+            <span>/month · +₱6,000 setup</span>
+          </div>
+          <div class="usd">≈ $21.29<br>/mo</div>
+        </div>
+        <div class="card-actions">
+          <a class="btn btn-primary btn-small" href="mailto:jeff.manahan72@gmail.com?subject=Quotation%20request%3A%20Cybersecurity%20Games&body=Hi%2C%20I%20would%20like%20a%20quotation%20for%20Cybersecurity%20Games.%20Team%20size%3A%20___%2C%20target%20go-live%3A%20___.">Get a quote</a>
+          <a class="btn btn-small" href="https://github.com/mjkulit03/cybersec_game" target="_blank" rel="noopener">View source ↗</a>
+        </div>
+      </article>
+      <article class="app-card"
+               data-category="Records &amp; Document Management"
+               data-search="online file tracking system records &amp; document management every physical file accounted for, from registration to archive. an online file tracking system for physical and digital records. every file gets a barcode or qr label, and each movement is recorded as a chain of custody: who checked it out, which office holds it, when it is due back and who received it. overdue files trigger reminders, retention rules flag records for disposition, and the audit log shows the complete history of a document from registration to archive. barcode and qr registration for every file chain-of-custody check-out and check-in current location by office, room and custodian overdue and missing-file alerts retention schedules and disposition workflow bulk import from existing registers search by reference, subject, date or custodian complete access and movement audit log">
+        <div class="card-top">
+          <div class="app-icon" aria-hidden="true">🗃️</div>
+          <span class="pill">Records &amp; Document Management</span>
+        </div>
+        <h3>Online File Tracking System</h3>
+        <p class="tagline">Every physical file accounted for, from registration to archive.</p>
+        <ul>
+<li>Barcode and QR registration for every file</li><li>Chain-of-custody check-out and check-in</li><li>Current location by office, room and custodian</li>        </ul>
+        <div class="price-row">
+          <div class="price">
+            <strong>₱1,490</strong>
+            <span>/month · +₱8,000 setup</span>
+          </div>
+          <div class="usd">≈ $24.59<br>/mo</div>
+        </div>
+        <div class="card-actions">
+          <a class="btn btn-primary btn-small" href="mailto:jeff.manahan72@gmail.com?subject=Quotation%20request%3A%20Online%20File%20Tracking%20System&body=Hi%2C%20I%20would%20like%20a%20quotation%20for%20Online%20File%20Tracking%20System.%20Team%20size%3A%20___%2C%20target%20go-live%3A%20___.">Get a quote</a>
+          <a class="btn btn-small" href="https://mjkulit03.github.io/file-tracking/" target="_blank" rel="noopener">Live demo ↗</a>
+        </div>
+      </article>
+    </div>
+
+    <div class="empty" id="empty">
+      <strong>No system matches that search.</strong>
+      Try a different word, or clear the filters to see all 13 systems.
+    </div>
+  </section>
+
+  <section class="wrap" id="bundle">
+    <div class="band">
+      <div class="band-inner">
+        <div>
+          <h2>Run the whole suite.</h2>
+          <p>
+            One contract for all 13 systems, one deployment, one support line.
+            Shared staff and asset records mean the systems stop contradicting each other,
+            and every new system you add later plugs into the same foundation.
+          </p>
+          <p class="small" style="color:#A9B2C2;margin:0">
+            One-off implementation ₱159,000 · annual maintenance retainer 30% of contract · VAT inclusive
+          </p>
+        </div>
+        <div class="bundle-price">
+          <span class="label">Whole suite</span>
+          <strong>₱25,670<span style="font-size:16px;font-family:var(--sans);color:#C8CEDA"> /month</span></strong>
+          <span>≈ $423.56 per month, all 13 systems</span>
+          <a class="btn" href="mailto:jeff.manahan72@gmail.com?subject=Quotation%20request%3A%20whole%20suite&body=Hi%2C%20I%20would%20like%20a%20quotation%20for%20all%2013%20systems%20in%20the%20My%20Team%20App%20Store.">Request a suite quote</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap blocks" id="how">
+    <div class="block">
+      <h2>How buying works</h2>
+      <ol class="steps">
+        <li>
+          <strong>Send the request</strong>
+          <span>Use the quote button on any system, or the suite button above. No account needed.</span>
+        </li>
+        <li>
+          <strong>Get a formal quotation</strong>
+          <span>Scope, seats, term and price — with the payment schedule spelled out before anything is signed.</span>
+        </li>
+        <li>
+          <strong>Approve and we implement</strong>
+          <span>50% on approval, 50% once implementation completes. Data import and staff training included.</span>
+        </li>
+        <li>
+          <strong>Go live with support</strong>
+          <span>Annual maintenance retainer covers updates, fixes and a named support contact.</span>
+        </li>
+      </ol>
+    </div>
+    <div class="block faq" id="faq">
+      <h2>Questions buyers ask</h2>
+      <details open>
+        <summary>Can the systems run without internet?</summary>
+        <p>Yes. Offline POS, the file tracking system and the attendance system keep working locally and sync when a connection returns. The rest run on-premise on your own server.</p>
+      </details>
+      <details>
+        <summary>Where does our data live?</summary>
+        <p>On your infrastructure. There is no shared multi-tenant database, no third-party analytics and no per-user cloud fee. You own the database and can export it at any time.</p>
+      </details>
+      <details>
+        <summary>What does implementation include?</summary>
+        <p>Installation, configuration, migration of existing spreadsheets or registers, role setup and staff training. The one-off setup fee on each system covers that work.</p>
+      </details>
+      <details>
+        <summary>Do you customise?</summary>
+        <p>Yes. Reports, fields and approval rules can be adapted. Custom work is quoted separately so the standard product price stays predictable.</p>
+      </details>
+      <details>
+        <summary>How is the annual maintenance fee calculated?</summary>
+        <p>30% of the contract value, billed annually from go-live. It covers updates, bug fixes and support; it is separate from the two implementation instalments.</p>
+      </details>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <p><strong>My Team App Store</strong> — 13 business systems. Prices in Philippine peso (PHP), VAT inclusive.</p>
+    <div class="footer-links">
+      <a href="https://github.com/mjkulit03" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://github.com/mjkulit03/my-team-appstore" target="_blank" rel="noopener">Source</a>
+      <a href="mailto:jeff.manahan72@gmail.com">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var cards = Array.prototype.slice.call(document.querySelectorAll('.app-card'));
+  var search = document.getElementById('search');
+  var chips = Array.prototype.slice.call(document.querySelectorAll('.chip'));
+  var empty = document.getElementById('empty');
+  var count = document.getElementById('result-count');
+  var category = '';
+
+  function apply() {
+    var query = (search.value || '').trim().toLowerCase();
+    var shown = 0;
+    cards.forEach(function (card) {
+      var matchesQuery = !query || (card.getAttribute('data-search') || '').indexOf(query) !== -1;
+      var matchesCategory = !category || card.getAttribute('data-category') === category;
+      var visible = matchesQuery && matchesCategory;
+      card.hidden = !visible;
+      if (visible) { shown += 1; }
+    });
+    empty.style.display = shown === 0 ? 'block' : 'none';
+    count.textContent = shown + (shown === 1 ? ' system' : ' systems');
+  }
+
+  search.addEventListener('input', apply);
+
+  chips.forEach(function (chip) {
+    chip.addEventListener('click', function () {
+      category = chip.getAttribute('data-category') || '';
+      chips.forEach(function (other) { other.classList.toggle('is-active', other === chip); });
+      apply();
+    });
+  });
+
+  apply();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}My Team{% endblock %}</title>
+  <meta name="description" content="{% block description %}Asset, HR, project, retail, records and security software for organisations that need their records straight.{% endblock %}">
+  <link rel="stylesheet" href="/static/site.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="logo" href="/">
+        <span class="logo-mark" aria-hidden="true">MT</span>
+        <span>
+          <strong>My Team</strong>
+          <small>Operations software suite</small>
+        </span>
+      </a>
+      <nav class="site-nav">
+        <a href="/#catalog">Products</a>
+        <a href="/app-store">App Store</a>
+        <a href="/dashboard">AI Command Center</a>
+        <a href="/control/login">Control Panel</a>
+        <a href="/docs">API</a>
+      </nav>
+      <p class="currency-note">Prices in PHP (₱)</p>
+    </div>
+  </header>
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <p><strong>My Team</strong> — asset, HR, project, retail, records and security software. All prices in Philippine peso (PHP).</p>
+      <p class="muted">Simulated AI employees. Copy is machine-drafted and reviewed by a human before publishing.</p>
+    </div>
+  </footer>
+</body>
+</html>

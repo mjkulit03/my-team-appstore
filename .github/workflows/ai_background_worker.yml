@@ -1,0 +1,109 @@
+name: AI Background Worker
+
+# Scheduled background task: flushes any human-approval escalations that the AI
+# workforce has raised since the last run.
+#
+# Two modes, driven by secrets (Settings -> Secrets and variables -> Actions):
+#   1. WORKER_URL set    -> POST to a deployed instance's /api/worker/run
+#   2. WORKER_URL unset  -> run the worker locally in the runner
+#
+# Email / WhatsApp credentials come from the same repository secrets. With no
+# secrets configured the job still runs, reports what it would do, and exits 0,
+# so the workflow is safe to enable on a fresh public repository.
+
+on:
+  schedule:
+    # Every 15 minutes. GitHub queues these, so actual timing can drift.
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Report what would be sent without sending"
+        required: false
+        default: true
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ai-background-worker
+  cancel-in-progress: false
+
+jobs:
+  run-worker:
+    name: Dispatch escalations
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # Secrets are exposed to the step as environment variables only.
+      # Nothing here echoes a secret value back to the log.
+      - name: Run worker against the deployed instance
+        if: ${{ env.WORKER_URL != '' }}
+        env:
+          WORKER_URL: ${{ secrets.WORKER_URL }}
+          WORKER_TOKEN: ${{ secrets.WORKER_TOKEN }}
+          DRY_RUN: ${{ inputs.dry_run == 'true' }}
+        run: |
+          set -euo pipefail
+          echo "Posting to the deployed instance instead of running locally."
+          args=(-X POST)
+          if [ "$DRY_RUN" = "true" ]; then
+            args+=("?dry_run=true")
+          fi
+          if [ -n "${WORKER_TOKEN:-}" ]; then
+            curl -fsS --max-time 60 "${args[@]}" \
+              -H "Authorization: Bearer ${WORKER_TOKEN}" \
+              "${WORKER_URL}/api/worker/run"
+          else
+            curl -fsS --max-time 60 "${args[@]}" "${WORKER_URL}/api/worker/run"
+          fi
+
+      - name: Run worker locally
+        if: ${{ env.WORKER_URL == '' }}
+        env:
+          NOTIFY_ENABLED: ${{ vars.NOTIFY_ENABLED || 'false' }}
+          NOTIFY_CHANNELS: ${{ vars.NOTIFY_CHANNELS || 'email' }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ vars.SMTP_PORT || '587' }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          SMTP_FROM: ${{ secrets.SMTP_FROM }}
+          SMTP_USE_TLS: ${{ vars.SMTP_USE_TLS || 'true' }}
+          ALERT_EMAILS: ${{ vars.ALERT_EMAILS }}
+          NOTIFY_WEBHOOK_PROVIDER: ${{ vars.NOTIFY_WEBHOOK_PROVIDER || 'generic' }}
+          NOTIFY_WEBHOOK_URL: ${{ secrets.NOTIFY_WEBHOOK_URL }}
+          NOTIFY_WEBHOOK_TOKEN: ${{ secrets.NOTIFY_WEBHOOK_TOKEN }}
+          NOTIFY_WEBHOOK_PHONE: ${{ vars.NOTIFY_WEBHOOK_PHONE }}
+          LEAD_VALUE_THRESHOLD: ${{ vars.LEAD_VALUE_THRESHOLD || '3000' }}
+          ACCOUNTING_ANOMALY_THRESHOLD: ${{ vars.ACCOUNTING_ANOMALY_THRESHOLD || '1000' }}
+          DATA_DIR: ${{ runner.temp }}/var
+        run: |
+          set -euo pipefail
+          python -m notifications.worker --json
+
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo "## AI Background Worker"
+            echo ""
+            echo "- Notifications enabled: \`${NOTIFY_ENABLED:-false}\`"
+            echo "- Configured channels: \`$([ -n "${SMTP_HOST:-}" ] && echo email || echo none)\`"
+            echo ""
+            echo "Escalations are delivered through the notification pipeline."
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Tests (py${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Byte-compile everything
+        run: python -m compileall -q agents api catalog notifications main.py schemas.py store.py auth.py
+
+      - name: Run tests
+        env:
+          DATA_DIR: ${{ runner.temp }}/var
+          CONTROL_PANEL_PASSWORD: ci-test-password
+          SESSION_SECRET: ci-test-session-secret
+        run: python -m pytest -q
+
+      - name: Verify no secrets are committed
+        run: |
+          if git ls-files --error-unmatch .env >/dev/null 2>&1; then
+            echo "::error::A .env file is committed. Remove it and rotate any secrets inside."
+            exit 1
+          fi
+          echo "No .env committed."

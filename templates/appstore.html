@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>App Store — {{ count }} business systems by My Team</title>
+<meta name="description" content="{{ count }} ready-to-deploy business systems: asset and inventory management, HRIS, project management, offline POS, attendance, records tracking and security awareness training.">
+<style>
+  :root{
+    --paper:#F7F5EF;
+    --surface:#FFFFFF;
+    --surface-2:#EFEBE1;
+    --ink:#14181F;
+    --navy:#1B2A4A;
+    --navy-deep:#101B33;
+    --slate:#57606F;
+    --slate-light:#868FA0;
+    --line:#DDD8CC;
+    --line-strong:#C7C0AE;
+    --brass:#8E6E37;
+    --brass-deep:#6E5327;
+    --brass-tint:#F1E8D3;
+    --ok:#2F6B4F;
+    --radius:14px;
+    --shadow:0 1px 2px rgba(16,27,51,.05), 0 10px 30px rgba(16,27,51,.07);
+    --serif:Georgia, 'Times New Roman', serif;
+    --sans:-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    --mono:'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    --maxw:1160px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  .wrap{width:min(var(--maxw), calc(100% - 40px));margin:0 auto}
+  .muted{color:var(--slate)}
+  .small{font-size:13px}
+
+  /* header */
+  .site-header{position:sticky;top:0;z-index:20;background:rgba(247,245,239,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .header-inner{display:flex;align-items:center;gap:22px;padding:14px 0}
+  .logo{display:flex;align-items:center;gap:11px;text-decoration:none;margin-right:auto}
+  .logo-mark{width:36px;height:36px;border-radius:9px;background:var(--navy);color:#F7F5EF;display:grid;place-items:center;font-family:var(--serif);font-weight:700;letter-spacing:.02em;font-size:15px}
+  .logo strong{display:block;font-family:var(--serif);font-size:16px;letter-spacing:-.01em;line-height:1.15}
+  .logo small{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--slate);font-weight:600}
+  .site-nav{display:flex;align-items:center;gap:18px;font-size:13.5px;font-weight:600}
+  .site-nav a{text-decoration:none;color:var(--slate)}
+  .site-nav a:hover{color:var(--ink)}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);border-radius:8px;padding:10px 16px;font-size:13.5px;font-weight:650;text-decoration:none;cursor:pointer;transition:transform .12s ease, border-color .12s ease, background .12s ease}
+  .btn:hover{border-color:var(--navy);transform:translateY(-1px)}
+  .btn-primary{background:var(--navy);border-color:var(--navy);color:#fff}
+  .btn-primary:hover{background:var(--navy-deep);border-color:var(--navy-deep)}
+  .btn-small{padding:7px 12px;font-size:12.5px}
+  .btn-ghost{background:transparent;border-color:rgba(255,255,255,.28);color:#F7F5EF}
+  .btn-ghost:hover{border-color:#F7F5EF;background:rgba(255,255,255,.06)}
+
+  /* hero */
+  .hero{background:var(--navy-deep);color:#F7F5EF;position:relative;overflow:hidden}
+  .hero::before{content:"";position:absolute;inset:0;background:
+    radial-gradient(900px 420px at 12% -10%, rgba(142,110,55,.42), transparent 60%),
+    radial-gradient(700px 380px at 92% 0%, rgba(87,96,111,.35), transparent 65%);
+    pointer-events:none}
+  .hero .wrap{position:relative;padding:66px 0 58px}
+  .eyebrow{display:inline-flex;align-items:center;gap:9px;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:#D8C39A;border:1px solid rgba(216,195,154,.32);border-radius:999px;padding:6px 13px}
+  .hero h1{font-family:var(--serif);font-size:clamp(34px, 5vw, 56px);line-height:1.06;letter-spacing:-.025em;margin:22px 0 16px;max-width:18ch;font-weight:600}
+  .hero p.lede{font-size:17.5px;line-height:1.6;color:#C8CEDA;max-width:62ch;margin:0 0 26px}
+  .hero-actions{display:flex;flex-wrap:wrap;gap:11px;margin-bottom:30px}
+  .hero-stats{display:flex;flex-wrap:wrap;gap:34px;padding-top:24px;border-top:1px solid rgba(255,255,255,.14)}
+  .hero-stat strong{display:block;font-family:var(--serif);font-size:25px;line-height:1.2;letter-spacing:-.01em}
+  .hero-stat span{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#A9B2C2;font-weight:600}
+
+  /* toolbar */
+  .catalog{padding:46px 0 20px}
+  .section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:22px}
+  .section-head h2{font-family:var(--serif);font-size:clamp(25px,3vw,34px);letter-spacing:-.02em;margin:0 0 6px;font-weight:600}
+  .section-head p{margin:0;color:var(--slate);font-size:14.5px;max-width:62ch}
+  .toolbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+  .search{position:relative;flex:1 1 280px;max-width:420px}
+  .search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);opacity:.5}
+  .search input{width:100%;padding:11px 13px 11px 38px;border:1px solid var(--line-strong);border-radius:9px;background:var(--surface);font-size:14px;font-family:inherit;color:var(--ink)}
+  .search input:focus{outline:2px solid var(--brass);outline-offset:1px;border-color:var(--brass)}
+  .chips{display:flex;flex-wrap:wrap;gap:7px}
+  .chip{border:1px solid var(--line-strong);background:transparent;color:var(--slate);border-radius:999px;padding:6px 12px;font-size:12.5px;font-weight:600;font-family:inherit;cursor:pointer}
+  .chip:hover{border-color:var(--navy);color:var(--ink)}
+  .chip.is-active{background:var(--navy);border-color:var(--navy);color:#fff}
+  .result-count{font-size:12.5px;color:var(--slate);margin-left:auto;white-space:nowrap}
+
+  /* cards */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:18px}
+  .app-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:21px;display:flex;flex-direction:column;box-shadow:var(--shadow);transition:transform .15s ease, border-color .15s ease}
+  .app-card:hover{transform:translateY(-3px);border-color:var(--line-strong)}
+  .app-card[hidden]{display:none}
+  .card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}
+  .app-icon{width:44px;height:44px;border-radius:11px;background:var(--surface-2);display:grid;place-items:center;font-size:22px;line-height:1}
+  .pill{display:inline-block;background:var(--brass-tint);color:var(--brass-deep);border-radius:999px;padding:3px 9px;font-size:10.5px;font-weight:750;letter-spacing:.05em;text-transform:uppercase;white-space:nowrap}
+  .app-card h3{font-family:var(--serif);font-size:19px;line-height:1.25;letter-spacing:-.01em;margin:0 0 7px;font-weight:600}
+  .app-card .tagline{color:var(--slate);font-size:13.5px;margin:0 0 13px}
+  .app-card ul{list-style:none;margin:0 0 16px;padding:0;display:flex;flex-direction:column;gap:6px;flex:1}
+  .app-card li{position:relative;padding-left:16px;font-size:12.8px;color:#3B434F}
+  .app-card li::before{content:"";position:absolute;left:2px;top:.55em;width:5px;height:5px;border-radius:50%;background:var(--brass)}
+  .price-row{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;padding-top:13px;border-top:1px solid var(--line);margin-bottom:13px}
+  .price strong{font-family:var(--serif);font-size:21px;letter-spacing:-.01em}
+  .price span{display:block;font-size:11.5px;color:var(--slate)}
+  .price .usd{font-size:11.5px;color:var(--slate-light);text-align:right;white-space:nowrap}
+  .card-actions{display:flex;gap:8px;flex-wrap:wrap}
+  .card-actions .btn{flex:1 1 auto}
+  .empty{display:none;text-align:center;padding:54px 20px;color:var(--slate);border:1px dashed var(--line-strong);border-radius:var(--radius);background:var(--surface)}
+  .empty strong{display:block;font-family:var(--serif);font-size:20px;color:var(--ink);margin-bottom:4px}
+
+  /* bundle */
+  .band{margin:52px 0 0;background:var(--navy);color:#F7F5EF;border-radius:20px;overflow:hidden;position:relative}
+  .band::after{content:"";position:absolute;right:-120px;top:-120px;width:360px;height:360px;border-radius:50%;background:radial-gradient(circle, rgba(142,110,55,.5), transparent 70%)}
+  .band-inner{position:relative;display:grid;grid-template-columns:1.5fr 1fr;gap:30px;padding:38px 38px}
+  .band h2{font-family:var(--serif);font-size:clamp(24px,3vw,32px);letter-spacing:-.02em;margin:0 0 10px;font-weight:600}
+  .band p{margin:0 0 18px;color:#C8CEDA;font-size:14.5px;max-width:56ch}
+  .bundle-price{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);border-radius:14px;padding:20px 22px;align-self:center}
+  .bundle-price .label{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#D8C39A;font-weight:700}
+  .bundle-price strong{display:block;font-family:var(--serif);font-size:34px;line-height:1.2;letter-spacing:-.02em;margin:4px 0 2px}
+  .bundle-price span{font-size:12.5px;color:#C8CEDA}
+  .bundle-price .btn{margin-top:14px;width:100%;background:#F7F5EF;border-color:#F7F5EF;color:var(--navy-deep)}
+  .bundle-price .btn:hover{background:#fff}
+
+  /* steps + faq */
+  .blocks{display:grid;grid-template-columns:1fr 1fr;gap:26px;margin:56px 0 0}
+  .block h2{font-family:var(--serif);font-size:clamp(22px,2.4vw,27px);letter-spacing:-.02em;margin:0 0 16px;font-weight:600}
+  .steps{list-style:none;margin:0;padding:0;counter-reset:step}
+  .steps li{position:relative;padding:0 0 18px 46px;counter-increment:step}
+  .steps li:last-child{padding-bottom:0}
+  .steps li::before{content:counter(step);position:absolute;left:0;top:0;width:30px;height:30px;border-radius:50%;background:var(--surface);border:1px solid var(--line-strong);display:grid;place-items:center;font-family:var(--serif);font-size:14px;font-weight:700;color:var(--brass-deep)}
+  .steps li::after{content:"";position:absolute;left:14.5px;top:33px;bottom:4px;width:1px;background:var(--line)}
+  .steps li:last-child::after{display:none}
+  .steps strong{display:block;font-size:14px;margin-bottom:2px}
+  .steps span{font-size:13px;color:var(--slate)}
+
+  .faq details{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:13px 16px;margin-bottom:9px}
+  .faq details[open]{border-color:var(--line-strong)}
+  .faq summary{cursor:pointer;font-weight:650;font-size:13.8px;list-style:none;display:flex;justify-content:space-between;gap:10px;align-items:center}
+  .faq summary::-webkit-details-marker{display:none}
+  .faq summary::after{content:"+";font-family:var(--serif);font-size:18px;color:var(--brass);line-height:1}
+  .faq details[open] summary::after{content:"–"}
+  .faq p{margin:9px 0 0;font-size:13px;color:var(--slate)}
+
+  /* footer */
+  .site-footer{margin-top:64px;border-top:1px solid var(--line);background:var(--surface);padding:30px 0}
+  .footer-inner{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;align-items:center}
+  .footer-inner p{margin:0;font-size:12.8px;color:var(--slate)}
+  .footer-links{display:flex;gap:16px;font-size:12.8px;font-weight:600}
+  .footer-links a{text-decoration:none;color:var(--navy)}
+
+  @media (max-width:820px){
+    .band-inner{grid-template-columns:1fr;padding:30px 24px}
+    .blocks{grid-template-columns:1fr}
+    .site-nav{display:none}
+    .hero .wrap{padding:48px 0 42px}
+    .result-count{display:none}
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="logo" href="#top">
+      <span class="logo-mark" aria-hidden="true">MT</span>
+      <span>
+        <strong>My Team App Store</strong>
+        <small>Business systems, ready to deploy</small>
+      </span>
+    </a>
+    <nav class="site-nav" aria-label="Sections">
+      <a href="#catalog">All apps</a>
+      <a href="#bundle">Bundle</a>
+      <a href="#how">How it works</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <a class="btn btn-small" href="{{ github_url }}" target="_blank" rel="noopener">GitHub ↗</a>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="wrap">
+      <span class="eyebrow">{{ count }} systems · one store</span>
+      <h1>Software your business can run on day one.</h1>
+      <p class="lede">
+        Inventory, assets, HR, projects, retail, attendance, records and security
+        awareness — built for Philippine organisations, delivered on-premise or offline,
+        and priced in pesos with no per-user surprises.
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#catalog">Browse all {{ count }} systems</a>
+        <a class="btn btn-ghost" href="#bundle">See the whole-suite price</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat"><strong>{{ count }}</strong><span>Ready systems</span></div>
+        <div class="hero-stat"><strong>₱0</strong><span>Per-user fees</span></div>
+        <div class="hero-stat"><strong>Offline</strong><span>Capable by design</span></div>
+        <div class="hero-stat"><strong>50/50</strong><span>Payment on delivery</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap catalog" id="catalog">
+    <div class="section-head">
+      <div>
+        <h2>The catalog</h2>
+        <p>Every system is sold on its own, or run several on one shared record of your stock, staff and documents.</p>
+      </div>
+      <p class="small muted">Prices in Philippine peso · billed monthly · USD shown for reference</p>
+    </div>
+
+    <div class="toolbar">
+      <div class="search">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.6-3.6"></path></svg>
+        <input id="search" type="search" placeholder="Search systems, categories, features…" aria-label="Search systems">
+      </div>
+      <div class="chips" id="chips">
+        <button class="chip is-active" type="button" data-category="">All</button>
+        {% for category in categories %}
+        <button class="chip" type="button" data-category="{{ category }}">{{ category }}</button>
+        {% endfor %}
+      </div>
+      <span class="result-count" id="result-count">{{ count }} systems</span>
+    </div>
+
+    <div class="grid" id="grid">
+      {% for p in products %}
+      <article class="app-card"
+               data-category="{{ p.category }}"
+               data-search="{{ (p.name ~ ' ' ~ p.category ~ ' ' ~ p.tagline ~ ' ' ~ p.description ~ ' ' ~ p.features|join(' '))|lower }}">
+        <div class="card-top">
+          <div class="app-icon" aria-hidden="true">{{ p.icon }}</div>
+          <span class="pill">{{ p.category }}</span>
+        </div>
+        <h3>{{ p.name }}</h3>
+        <p class="tagline">{{ p.tagline }}</p>
+        <ul>
+          {% for feature in p.features[:3] %}<li>{{ feature }}</li>{% endfor %}
+        </ul>
+        <div class="price-row">
+          <div class="price">
+            <strong>₱{{ p.price_display }}</strong>
+            <span>/month · +₱{{ p.setup_display }} setup</span>
+          </div>
+          <div class="usd">≈ ${{ p.usd_display }}<br>/mo</div>
+        </div>
+        <div class="card-actions">
+          <a class="btn btn-primary btn-small" href="mailto:{{ email }}?subject={{ ('Quotation request: ' ~ p.name)|urlencode }}&body={{ ('Hi, I would like a quotation for ' ~ p.name ~ '. Team size: ___, target go-live: ___.')|urlencode }}">Get a quote</a>
+          {% if p.demo_url %}
+          <a class="btn btn-small" href="{{ p.demo_url }}" target="_blank" rel="noopener">Live demo ↗</a>
+          {% elif p.repo_url %}
+          <a class="btn btn-small" href="{{ p.repo_url }}" target="_blank" rel="noopener">View source ↗</a>
+          {% endif %}
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+
+    <div class="empty" id="empty">
+      <strong>No system matches that search.</strong>
+      Try a different word, or clear the filters to see all {{ count }} systems.
+    </div>
+  </section>
+
+  <section class="wrap" id="bundle">
+    <div class="band">
+      <div class="band-inner">
+        <div>
+          <h2>Run the whole suite.</h2>
+          <p>
+            One contract for all {{ count }} systems, one deployment, one support line.
+            Shared staff and asset records mean the systems stop contradicting each other,
+            and every new system you add later plugs into the same foundation.
+          </p>
+          <p class="small" style="color:#A9B2C2;margin:0">
+            One-off implementation ₱{{ bundle_setup }} · annual maintenance retainer 30% of contract · VAT inclusive
+          </p>
+        </div>
+        <div class="bundle-price">
+          <span class="label">Whole suite</span>
+          <strong>₱{{ bundle_month }}<span style="font-size:16px;font-family:var(--sans);color:#C8CEDA"> /month</span></strong>
+          <span>≈ ${{ bundle_usd }} per month, all {{ count }} systems</span>
+          <a class="btn" href="mailto:{{ email }}?subject={{ 'Quotation request: whole suite'|urlencode }}&body={{ ('Hi, I would like a quotation for all ' ~ count ~ ' systems in the My Team App Store.')|urlencode }}">Request a suite quote</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap blocks" id="how">
+    <div class="block">
+      <h2>How buying works</h2>
+      <ol class="steps">
+        <li>
+          <strong>Send the request</strong>
+          <span>Use the quote button on any system, or the suite button above. No account needed.</span>
+        </li>
+        <li>
+          <strong>Get a formal quotation</strong>
+          <span>Scope, seats, term and price — with the payment schedule spelled out before anything is signed.</span>
+        </li>
+        <li>
+          <strong>Approve and we implement</strong>
+          <span>50% on approval, 50% once implementation completes. Data import and staff training included.</span>
+        </li>
+        <li>
+          <strong>Go live with support</strong>
+          <span>Annual maintenance retainer covers updates, fixes and a named support contact.</span>
+        </li>
+      </ol>
+    </div>
+    <div class="block faq" id="faq">
+      <h2>Questions buyers ask</h2>
+      <details open>
+        <summary>Can the systems run without internet?</summary>
+        <p>Yes. Offline POS, the file tracking system and the attendance system keep working locally and sync when a connection returns. The rest run on-premise on your own server.</p>
+      </details>
+      <details>
+        <summary>Where does our data live?</summary>
+        <p>On your infrastructure. There is no shared multi-tenant database, no third-party analytics and no per-user cloud fee. You own the database and can export it at any time.</p>
+      </details>
+      <details>
+        <summary>What does implementation include?</summary>
+        <p>Installation, configuration, migration of existing spreadsheets or registers, role setup and staff training. The one-off setup fee on each system covers that work.</p>
+      </details>
+      <details>
+        <summary>Do you customise?</summary>
+        <p>Yes. Reports, fields and approval rules can be adapted. Custom work is quoted separately so the standard product price stays predictable.</p>
+      </details>
+      <details>
+        <summary>How is the annual maintenance fee calculated?</summary>
+        <p>30% of the contract value, billed annually from go-live. It covers updates, bug fixes and support; it is separate from the two implementation instalments.</p>
+      </details>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <p><strong>My Team App Store</strong> — {{ count }} business systems. Prices in Philippine peso (PHP), VAT inclusive.</p>
+    <div class="footer-links">
+      <a href="{{ github_url }}" target="_blank" rel="noopener">GitHub</a>
+      <a href="{{ repo_url }}" target="_blank" rel="noopener">Source</a>
+      <a href="mailto:{{ email }}">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var cards = Array.prototype.slice.call(document.querySelectorAll('.app-card'));
+  var search = document.getElementById('search');
+  var chips = Array.prototype.slice.call(document.querySelectorAll('.chip'));
+  var empty = document.getElementById('empty');
+  var count = document.getElementById('result-count');
+  var category = '';
+
+  function apply() {
+    var query = (search.value || '').trim().toLowerCase();
+    var shown = 0;
+    cards.forEach(function (card) {
+      var matchesQuery = !query || (card.getAttribute('data-search') || '').indexOf(query) !== -1;
+      var matchesCategory = !category || card.getAttribute('data-category') === category;
+      var visible = matchesQuery && matchesCategory;
+      card.hidden = !visible;
+      if (visible) { shown += 1; }
+    });
+    empty.style.display = shown === 0 ? 'block' : 'none';
+    count.textContent = shown + (shown === 1 ? ' system' : ' systems');
+  }
+
+  search.addEventListener('input', apply);
+
+  chips.forEach(function (chip) {
+    chip.addEventListener('click', function () {
+      category = chip.getAttribute('data-category') || '';
+      chips.forEach(function (other) { other.classList.toggle('is-active', other === chip); });
+      apply();
+    });
+  });
+
+  apply();
+})();
+</script>
+</body>
+</html>

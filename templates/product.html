@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% block title %}{{ product.name }} — My Team{% endblock %}
+{% block description %}{{ product.tagline }}{% endblock %}
+
+{% block content %}
+<section class="product-hero">
+  <div class="wrap">
+    <a class="back" href="/#catalog">← All products</a>
+    <div class="product-hero-grid">
+      <div>
+        <span class="pill">{{ product.category }}</span>
+        <h1><span class="big-icon" aria-hidden="true">{{ product.icon }}</span> {{ product.name }}</h1>
+        <p class="lede">{{ product.tagline }}</p>
+        <p>{{ product.description }}</p>
+        <div class="price-big"><strong>{{ symbol }}{{ "{:,.0f}".format(product.price_month) }}</strong> / month
+          <span>+ one-off {{ symbol }}{{ "{:,.0f}".format(product.price_setup) }} setup
+          {% if usd_month %}· about {{ usd_month }}{% endif %}</span></div>
+        {% if product.demo_url or product.repo_url %}
+        <div class="product-links">
+          {% if product.demo_url %}<a class="btn btn-primary btn-small" href="{{ product.demo_url }}" target="_blank" rel="noopener">Open live demo</a>{% endif %}
+          {% if product.repo_url %}<a class="btn btn-small" href="{{ product.repo_url }}" target="_blank" rel="noopener">View source</a>{% endif %}
+        </div>
+        {% endif %}
+      </div>
+      <aside class="inquiry-card">
+        <h2>Request a quotation or demo</h2>
+        {% if submitted %}
+          <div class="flash flash-ok">
+            <strong>Thanks — we have your request.</strong>
+            <p>Estimated first-year value: <strong>{{ value_display }}</strong>.</p>
+            <p class="muted">Our Sales AI has drafted follow-up outreach. A human reviews every lead above the threshold before we reply.</p>
+          </div>
+        {% else %}
+        <form method="post" action="/products/{{ product.slug }}/quotation" class="form">
+          <label>Your name<input type="text" name="name" required minlength="2"></label>
+          <label>Work email<input type="email" name="email" required></label>
+          <label>Organisation<input type="text" name="organisation"></label>
+          <label>Team size (seats)<input type="number" name="seats" value="10" min="1" max="100000"></label>
+          <label>Contract term (months)<input type="number" name="term_months" value="12" min="1" max="120"></label>
+          <label class="check"><input type="checkbox" name="support" value="true"> Include annual support &amp; updates</label>
+          <label>Anything specific?<textarea name="message" rows="3" placeholder="Current system, pain points, timeline…"></textarea></label>
+          <button class="btn btn-primary btn-block" type="submit">Send me the quotation</button>
+          <p class="muted small">
+            Payment terms: 50% on approval, 50% after implementation completes, plus
+            a {{ '30' }}% annual maintenance retainer on the contract value.
+          </p>
+          <p class="muted small">We only use these details to reply to this request.</p>
+        </form>
+        <p class="muted small"><a href="#details">Prefer a demo first?</a> Just send your details and we will reach out.</p>
+        {% endif %}
+      </aside>
+    </div>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="split">
+    <div>
+      <h2>What it does</h2>
+      <ul class="feature-list">
+        {% for f in product.features %}<li>{{ f }}</li>{% endfor %}
+      </ul>
+    </div>
+    <div>
+      <h2>Why teams switch</h2>
+      <ul class="feature-list">
+        {% for h in product.highlights %}<li>{{ h }}</li>{% endfor %}
+      </ul>
+      <h2>Built for</h2>
+      <p>{{ product.audience|capitalize }}.</p>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Campaign copy drafted by the Marketing AI</h2>
+      <p>
+        Generated from this product's catalog entry. Nothing here is published without a human approving it.
+      </p>
+    </div>
+
+    <div class="post-grid">
+      {% for post in marketing.posts %}
+      <article class="card post-card">
+        <div class="card-body">
+          <div class="post-head">
+            <strong>{{ post.channel }}</strong>
+            <span class="muted small">{{ post.char_count }}/{{ post.char_limit }} chars</span>
+          </div>
+          <pre class="post-text">{{ post.post }}</pre>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+
+    <details class="strategy">
+      <summary>Strategy points ({{ marketing.strategy|length }})</summary>
+      <ul class="mini-list">
+        {% for s in marketing.strategy %}<li><strong>{{ s.point }}</strong> <span class="muted">{{ s.rationale }}</span></li>{% endfor %}
+      </ul>
+    </details>
+
+    <p class="muted small">
+      Drafted for category <strong>{{ marketing.detected_category }}</strong>, audience
+      <strong>{{ marketing.detected_audience }}</strong>, tone <strong>{{ marketing.tone }}</strong>.
+    </p>
+  </div>
+</section>
+{% endblock %}

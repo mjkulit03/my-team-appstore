@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Approve campaign — {{ product.name }}{% endblock %}
+
+{% block content %}
+<section class="wrap">
+  <div class="section-head">
+    <h1>Campaign review: {{ product.name }}</h1>
+    <p>The Marketing AI drafted this copy. Nothing publishes until a human approves it.</p>
+    <a class="btn btn-ghost btn-small" href="/control/overview">← Back to overview</a>
+  </div>
+
+  {% if escalation %}
+  <div class="flash flash-warn">
+    <strong>Approval required</strong>
+    <p>{{ escalation.summary }}</p>
+  </div>
+  {% else %}
+  <div class="flash flash-ok"><p>No approval gate triggered for this product.</p></div>
+  {% endif %}
+
+  <h2>Drafted posts</h2>
+  <div class="post-grid">
+    {% for post in campaign.posts %}
+    <article class="card post-card">
+      <div class="card-body">
+        <div class="post-head">
+          <strong>{{ post.channel }}</strong>
+          <span class="muted small">{{ post.char_count }}/{{ post.char_limit }} chars{% if post.truncated %} · truncated{% endif %}</span>
+        </div>
+        <pre class="post-text">{{ post.post }}</pre>
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+
+  <h2>Strategy</h2>
+  <ul class="mini-list">
+    {% for s in campaign.strategy %}<li><strong>{{ s.point }}</strong> <span class="muted">{{ s.rationale }}</span></li>{% endfor %}
+  </ul>
+
+  {% if pending %}
+  <h2>Open escalations ({{ pending|length }})</h2>
+  <ul class="esc-list">
+    {% for e in pending %}
+    <li class="esc sev-{{ e.severity }}">
+      <div>
+        <span class="pill pill-{{ e.severity }}">{{ e.severity }}</span>
+        <strong>{{ e.title }}</strong>
+        <p class="muted small">{{ e.summary }}</p>
+      </div>
+      <form method="post" action="/control/escalations/{{ e.id }}/resolve" class="inline-form">
+        <input type="hidden" name="resolution" value="approved">
+        <button class="btn btn-primary btn-small" type="submit">Approve</button>
+      </form>
+      <form method="post" action="/control/escalations/{{ e.id }}/resolve" class="inline-form">
+        <input type="hidden" name="resolution" value="rejected">
+        <button class="btn btn-small" type="submit">Reject</button>
+      </form>
+    </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</section>
+{% endblock %}

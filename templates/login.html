@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Control Panel Sign In — My Team{% endblock %}
+
+{% block content %}
+<section class="narrow">
+  <div class="card auth-card">
+    <div class="card-body">
+      <h1>Control Panel</h1>
+      <p class="muted">For operators and administrators. Accounts are managed by an administrator.</p>
+
+      {% if problem %}
+        <div class="flash flash-warn">
+          <strong>Control panel disabled</strong>
+          <p>{{ problem }}</p>
+        </div>
+      {% else %}
+        {% if error %}<div class="flash flash-error"><p>{{ error }}</p></div>{% endif %}
+        <form method="post" action="/control/login" class="form">
+          <label>Username<input type="text" name="username" required autofocus autocomplete="username"></label>
+          <label>Password<input type="password" name="password" required autocomplete="current-password"></label>
+          <button class="btn btn-primary btn-block" type="submit">Sign in</button>
+        </form>
+
+        {% if demo_enabled %}
+        <div class="flash flash-ok">
+          <strong>Demo accounts enabled</strong>
+          <p class="small">Sign in as <code>admin</code>, <code>operator</code> or <code>analyst</code>.
+             The shared demo password is <code>DEMO_USER_PASSWORD</code> from your environment.</p>
+        </div>
+        {% endif %}
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}

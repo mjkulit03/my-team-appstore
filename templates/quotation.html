@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block title %}Quotation — {{ product.name }}{% endblock %}
+
+{% block content %}
+<section class="wrap narrow-wide">
+  <div class="section-head">
+    <a class="back" href="/products/{{ product.slug }}">← {{ product.name }}</a>
+    <h1>{% if record %}Quotation {{ record.quotation.reference }}{% else %}Your quotation{% endif %}</h1>
+    <p>Prepared by the AI workforce: Marketing qualifies the request, Sales prices it, Accounting clears it.</p>
+  </div>
+
+  {% if error %}
+  <div class="flash flash-error"><p>{{ error }}</p></div>
+  {% endif %}
+
+  {% if result or record %}
+    {% set q = (result.quotation if result else record.quotation) %}
+    {% set status = (result.status if result else record.status) %}
+
+    {% if status == 'sent' %}
+      <div class="flash flash-ok">
+        <strong>Quotation e-mailed</strong>
+        <p>Sent to {{ (result.email.to if result else record.customer.email) }}. Copy below for your records.</p>
+      </div>
+    {% elif status == 'needs_approval' %}
+      <div class="flash flash-warn">
+        <strong>Held for approval</strong>
+        <p>Accounting flagged this price, so it has not been sent. Operations has been alerted.</p>
+      </div>
+    {% elif status == 'failed' or status == 'no_email' %}
+      <div class="flash flash-warn">
+        <strong>Quotation ready but not e-mailed</strong>
+        <p>{{ (result.email.detail if result and result.email.detail else result.email.reason if result else record.email_detail) }}</p>
+      </div>
+    {% endif %}
+
+    <div class="card">
+      <div class="card-body">
+        <div class="quote-head">
+          <div>
+            <strong>{{ product.name }}</strong>
+            <p class="muted small">{{ q.customer.name }}{% if q.customer.organisation %} · {{ q.customer.organisation }}{% endif %}</p>
+            <p class="muted small">{{ q.seats }} seat{{ '' if q.seats == 1 else 's' }} · {{ q.term_months }} months · valid until {{ q.valid_until }}</p>
+          </div>
+          <div class="quote-total">
+            <span class="muted small">First-year total</span>
+            <strong>{{ symbol }}{{ "{:,.2f}".format(q.year_one_total) }}</strong>
+          </div>
+        </div>
+
+        <table class="table">
+          <thead><tr><th>Item</th><th style="text-align:right">Amount</th></tr></thead>
+          <tbody>
+            {% for line in q.lines %}
+            <tr>
+              <td>{{ line.description }}{% if line.detail %}<br><span class="muted small">{{ line.detail }}</span>{% endif %}</td>
+              <td style="text-align:right">{{ symbol }}{{ "{:,.2f}".format(line.amount) }}</td>
+            </tr>
+            {% endfor %}
+            <tr><td>Subtotal</td><td style="text-align:right">{{ symbol }}{{ "{:,.2f}".format(q.subtotal) }}</td></tr>
+            {% if q.discount_amount > 0 %}
+            <tr><td>Discount ({{ q.discount_pct }}%)</td><td style="text-align:right">-{{ symbol }}{{ "{:,.2f}".format(q.discount_amount) }}</td></tr>
+            {% endif %}
+            <tr>
+              <td><strong>Contract value</strong><br><span class="muted small">VAT-inclusive, of which VAT {{ symbol }}{{ "{:,.2f}".format(q.vat) }}</span></td>
+              <td style="text-align:right"><strong>{{ symbol }}{{ "{:,.2f}".format(q.contract_value) }}</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <h2>Payment terms</h2>
+    <div class="card"><div class="card-body">
+      <table class="table">
+        <thead><tr><th>Instalment</th><th>Due</th><th style="text-align:right">Amount</th></tr></thead>
+        <tbody>
+          {% for item in q.payment_schedule %}
+          <tr>
+            <td>{{ item.label }}</td>
+            <td>{{ item.trigger }}</td>
+            <td style="text-align:right">{{ symbol }}{{ "{:,.2f}".format(item.amount) }}</td>
+          </tr>
+          {% endfor %}
+          <tr>
+            <td><strong>First-year total</strong></td>
+            <td></td>
+            <td style="text-align:right"><strong>{{ symbol }}{{ "{:,.2f}".format(q.year_one_total) }}</strong></td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="muted small">Maintenance is {{ q.maintenance_rate }}% of the contract value, billed annually from go-live.</p>
+    </div></div>
+
+    {% if result and result.transcript %}
+    <h2>How this quotation was produced</h2>
+    <ol class="steps">
+      {% for s in result.transcript %}
+      <li><strong>{{ s.agent }} — {{ s.stage }}</strong><span>{{ s.summary }}</span></li>
+      {% endfor %}
+    </ol>
+    {% endif %}
+  {% else %}
+  {% endif %}
+</section>
+{% endblock %}

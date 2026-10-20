@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI Team Command Center</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>&#9881;</text></svg>">
+</head>
+<body>
+  <div class="app">
+
+    <!-- ---------------- Sidebar ---------------- -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">MT</div>
+        <div class="brand-text">
+          <h1>AI Team Command Center</h1>
+          <p>Three simulated employees</p>
+        </div>
+      </div>
+
+      <nav class="nav" role="tablist" aria-label="Agents" aria-orientation="vertical">
+        <button class="nav-item is-active" role="tab" id="tab-marketing"
+                aria-selected="true" aria-controls="panel-marketing" data-panel="marketing">
+          <span class="nav-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 11l18-7-7 18-3-8-8-3z"/></svg>
+          </span>
+          <span class="nav-text">
+            <strong>Marketing</strong>
+            <small>Posts &amp; strategy</small>
+          </span>
+        </button>
+
+        <button class="nav-item" role="tab" id="tab-sales"
+                aria-selected="false" aria-controls="panel-sales" data-panel="sales" tabindex="-1">
+          <span class="nav-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18v12H3z"/><path d="M3 7l9 6 9-6"/></svg>
+          </span>
+          <span class="nav-text">
+            <strong>Sales</strong>
+            <small>Cold outreach</small>
+          </span>
+        </button>
+
+        <button class="nav-item" role="tab" id="tab-accounting"
+                aria-selected="false" aria-controls="panel-accounting" data-panel="accounting" tabindex="-1">
+          <span class="nav-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19h16"/><path d="M7 19V9"/><path d="M12 19V5"/><path d="M17 19v-7"/></svg>
+          </span>
+          <span class="nav-text">
+            <strong>Accounting</strong>
+            <small>Financial status</small>
+          </span>
+        </button>
+      </nav>
+
+      <div class="sidebar-foot">
+        <div class="health" id="health" title="Backend status">
+          <span class="dot" aria-hidden="true"></span>
+          <span id="health-text">Checking…</span>
+        </div>
+        <div class="foot-links">
+          <a href="/docs" target="_blank" rel="noopener">API docs</a>
+          <a href="/agents" target="_blank" rel="noopener">Endpoints</a>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ---------------- Main ---------------- -->
+    <main class="main">
+
+      <!-- ===== Marketing ===== -->
+      <section class="panel is-active" id="panel-marketing" role="tabpanel" aria-labelledby="tab-marketing">
+        <header class="panel-head">
+          <h2>Marketing Agent</h2>
+          <p>Describe a product and get social posts for each channel plus strategy points.</p>
+        </header>
+
+        <div class="composer">
+          <label for="prompt-marketing">What are we marketing?</label>
+          <textarea id="prompt-marketing" rows="5" spellcheck="false"
+            placeholder="e.g. A SaaS platform that automates invoice reconciliation for small e-commerce merchants and syncs receipts directly into accounting software"></textarea>
+
+          <div class="composer-foot">
+            <div class="options">
+              <label class="opt">
+                <span>Product name <em>optional</em></span>
+                <input type="text" id="marketing-name" placeholder="auto-detected">
+              </label>
+              <label class="opt">
+                <span>Brand <em>optional</em></span>
+                <input type="text" id="marketing-brand" placeholder="Ledgerly Inc">
+              </label>
+              <label class="opt">
+                <span>Tone</span>
+                <select id="marketing-tone">
+                  <option value="confident">Confident</option>
+                  <option value="friendly">Friendly</option>
+                  <option value="bold">Bold</option>
+                  <option value="technical">Technical</option>
+                </select>
+              </label>
+            </div>
+            <button class="run" data-run="marketing">
+              <span class="run-label">Run Agent</span>
+            </button>
+          </div>
+          <p class="hint">Post the task above and press <kbd>Run Agent</kbd> · <kbd>Ctrl</kbd>+<kbd>Enter</kbd></p>
+        </div>
+
+        <div class="response" data-response="marketing" aria-live="polite"></div>
+      </section>
+
+      <!-- ===== Sales ===== -->
+      <section class="panel" id="panel-sales" role="tabpanel" aria-labelledby="tab-sales" hidden>
+        <header class="panel-head">
+          <h2>Sales Agent</h2>
+          <p>Name a customer type and get cold-outreach emails with a follow-up sequence.</p>
+        </header>
+
+        <div class="composer">
+          <label for="prompt-sales">Who are we selling to?</label>
+          <textarea id="prompt-sales" rows="5" spellcheck="false"
+            placeholder="e.g. small dental clinic owners"></textarea>
+
+          <div class="composer-foot">
+            <div class="options">
+              <label class="opt">
+                <span>Product <em>optional</em></span>
+                <input type="text" id="sales-name" placeholder="our product">
+              </label>
+              <label class="opt">
+                <span>Tone</span>
+                <select id="sales-tone">
+                  <option value="direct">Direct</option>
+                  <option value="warm">Warm</option>
+                  <option value="consultative">Consultative</option>
+                </select>
+              </label>
+              <label class="opt opt-narrow">
+                <span>Variants</span>
+                <select id="sales-variants">
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3" selected>3</option>
+                  <option value="4">4</option>
+                </select>
+              </label>
+            </div>
+            <button class="run" data-run="sales">
+              <span class="run-label">Run Agent</span>
+            </button>
+          </div>
+          <p class="hint">Post the task above and press <kbd>Run Agent</kbd> · <kbd>Ctrl</kbd>+<kbd>Enter</kbd></p>
+        </div>
+
+        <div class="response" data-response="sales" aria-live="polite"></div>
+      </section>
+
+      <!-- ===== Accounting ===== -->
+      <section class="panel" id="panel-accounting" role="tabpanel" aria-labelledby="tab-accounting" hidden>
+        <header class="panel-head">
+          <h2>Accounting Agent</h2>
+          <p>Drop in raw income and expense lines and get a summarised financial status report.</p>
+        </header>
+
+        <div class="composer">
+          <label for="prompt-accounting">Raw ledger entries</label>
+          <textarea id="prompt-accounting" rows="7" spellcheck="false"
+            placeholder="One entry per line:  type, category, amount, date (optional)&#10;income, Subscription revenue, 1000, 2026-03-01&#10;income, Services, 500&#10;expense, Payroll, 600, 2026-03-05&#10;expense, Bank fees, 12.40&#10;&#10;You can also paste a JSON array of entries."></textarea>
+
+          <div class="composer-foot">
+            <div class="options">
+              <label class="opt opt-narrow">
+                <span>Opening balance</span>
+                <input type="number" id="accounting-opening" value="0" step="0.01">
+              </label>
+              <label class="opt opt-narrow">
+                <span>Currency</span>
+                <input type="text" id="accounting-currency" value="USD" maxlength="4">
+              </label>
+            </div>
+            <button class="run" data-run="accounting">
+              <span class="run-label">Run Agent</span>
+            </button>
+          </div>
+          <p class="hint">Post the task above and press <kbd>Run Agent</kbd> · <kbd>Ctrl</kbd>+<kbd>Enter</kbd></p>
+        </div>
+
+        <div class="response" data-response="accounting" aria-live="polite"></div>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
