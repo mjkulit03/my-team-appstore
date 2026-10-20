@@ -41,6 +41,11 @@ jobs:
         env:
           STORE_GITHUB_URL: ${{ github.server_url }}/${{ github.repository_owner }}
           STORE_REPO_URL: ${{ github.server_url }}/${{ github.repository }}
+          # Set the repository variable STORE_ADMIN_URL to the hosted control
+          # panel (e.g. https://my-team-app.onrender.com/control/store) and the
+          # store's Admin button becomes a username/password sign-in. Left unset,
+          # the button keeps the GitHub-token dialog.
+          STORE_ADMIN_URL: ${{ vars.STORE_ADMIN_URL }}
         run: python tools/build_store.py
 
       - uses: actions/configure-pages@v5
