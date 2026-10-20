@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>App Store — {{ count }} business systems by My Team</title>
 <meta name="description" content="{{ count }} ready-to-deploy business systems: asset and inventory management, HRIS, project management, offline POS, attendance, records tracking and security awareness training.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
 <style>
   :root{
     --paper:#F7F5EF;
@@ -565,6 +566,18 @@
     });
   }
 
+  // Sorted keys and two-space indent, matching store_content.dumps() in Python,
+  // so each save is a minimal diff in the repository.
+  function canonicalJSON(value) {
+    function sorted(node) {
+      if (!node || typeof node !== 'object' || Array.isArray(node)) { return node; }
+      var out = {};
+      Object.keys(node).sort().forEach(function (key) { out[key] = sorted(node[key]); });
+      return out;
+    }
+    return JSON.stringify(sorted(value), null, 2) + '\n';
+  }
+
   function toBase64(text) {
     var bytes = new TextEncoder().encode(text);
     var binary = '';
@@ -791,7 +804,7 @@
       return;
     }
     collected.document.updated_at = new Date().toISOString();
-    var payload = JSON.stringify(collected.document, null, 2) + '\n';
+    var payload = canonicalJSON(collected.document);
 
     var saveBtn = document.getElementById('admin-save');
     saveBtn.disabled = true;
